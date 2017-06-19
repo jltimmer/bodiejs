@@ -83,6 +83,7 @@ function selectChoice(index) {
   // current_choices = generate_choices();
   render();
 }
+
 /* this function is still in the works for clicking directly on webpage
 window.onload = function() {
 var applyButton = document.getElementById("applyChoice");
