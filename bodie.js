@@ -15,6 +15,13 @@ var location_of =
   }
 
 
+//to see if i can make js cain a character, not treated as an object
+var nonobjects = 
+  ["Sheriff Hayes", "JS Cain", "Pat Reddy"]
+
+  
+
+
 var conversation_log =
   {
     "Firehouse": [],
@@ -83,25 +90,6 @@ function selectChoice(index) {
   // current_choices = generate_choices();
   render();
 }
-
-/* this function is still in the works for clicking directly on webpage
-window.onload = function() {
-var applyButton = document.getElementById("applyChoice");
-applyButton.addEventListener("Click", function () {
-
-  var index = document.getElementById("selectChoice").value;
-  
-  var display_text = applyOper(current_choices[index]);
-
-  document.getElementById("response").innerHTML = display_text;
-  
-  // current_choices = generate_choices();
-  render();
-
-
-});
-}
-*/
 
 
 function cmdToAction(cmd) {
@@ -221,10 +209,13 @@ function ignore(agent, thing) {
   var applies = location_of[agent] == location_of[thing];
 
   function effects() {
+    
     location_of[thing] = agent;
   }
 
-  var text = agent+" ignore "+thing+".";
+  var text = "Awkwardly and flushed, Cain lowers his hand. " +
+             "<q>Yes, well.</q> Anger flashes for a moment " +
+             "behind his pale eyes. <q>What brings you to my town?</q>";
 
   return {applies:applies, effects:effects, text:text};
 
@@ -238,8 +229,15 @@ function grasp(agent, thing) {
   function effects() {
     location_of[thing] = agent;
   }
-
-  var text = agent+" grasps "+thing+".";
+  
+  var text = "You grip his hand firmly and shake. <br /><br />" +
+            "<br /> <q>You've come at a particularly " +
+            "unfortunate time. Bodie never offers the comforts " +
+            "of the city, but it's usually more... welcoming than " +
+            "this.</q><br /> He gestures out the window at the burned street. " +
+            "<q>Luckily for everyone I had this bank constructed with " +
+            "brick and steel. They call it 'Jim Cain's luck', but " +
+            "luck has nothing to do with it. Anyways. What brings you to my town?</q>";
 
   return {applies:applies, effects:effects, text:text};
 
