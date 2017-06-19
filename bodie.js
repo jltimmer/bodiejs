@@ -3,7 +3,11 @@ var locations =
     "Bakery", "Chinatown", "Sheriff Location", "TownHall"]
 
 var characters =
-  ["You"]
+    ["You"]
+
+//to see if i can make js cain a character, not treated as an object
+var nonobjects =
+    ["Sheriff Hayes", "JS Cain", "Pat Reddy"]
 
 // State
 var location_of =
@@ -14,10 +18,13 @@ var location_of =
     
   }
 
-
-//to see if i can make js cain a character, not treated as an object
-var nonobjects = 
-  ["Sheriff Hayes", "JS Cain", "Pat Reddy"]
+var clothing_on =
+    {
+        "Sheriff Hayes": "",
+        "JS Cain": "",
+        "Pat Reddy": "",
+        "You": ""
+    }
 
   
 
@@ -38,10 +45,30 @@ var current_choices;
 
 
 function choiceToString(c) {
-  var {op, args} = c;
-  var str = op+"(";
-  str = op+"("+ args.toString() + ")";
-  return str;
+    var { op, args } = c;
+    var str = "";
+
+    switch (op) {
+        case "grasp": {
+            return "Grasp " + args[1];
+        }
+        case "ignore": {
+            return "Ignore " + args[1];
+        }
+        case "go": {
+            return "Go to " + args[1];
+        }
+        case "talk": {
+            return "Talk to " + args[1];
+        }
+        case "give": {
+            return "Give " + args[2] + " to " + args[1];
+        }
+        case "wear": {
+            return "Wear " + args[1];
+        }
+        default: return op + " " + args[args.length - 1];
+    }
 }
 
 function displayState() {
@@ -66,13 +93,19 @@ function displayState() {
 }
 
 function displayChoices() {
-  // current_choices = generate_choices();
-  toRender = "";
-  for (var i = 0; i < current_choices.length; i++) {
-    var choice = current_choices[i];
-    toRender += ""+i+": "+choiceToString(choice)+"<br>";
-  }
-  document.getElementById("choices").innerHTML = toRender;
+    // current_choices = generate_choices();
+    toRender = "";
+    for (var i = 0; i < current_choices.length; i++) {
+        var choice = current_choices[i];
+        var last_character;
+        if (choice.args[0] != last_character) {
+            toRender += "<br>" + "Actions for " + choice.args[0] + "<br>";
+        }
+        toRender += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
+
+        last_character = choice.args[0];
+    }
+    document.getElementById("choices").innerHTML = toRender;
 }
 
 function render() {
@@ -147,14 +180,16 @@ function generate_choices () {
     var c = characters[ci];
     var loc = location_of[c];
     var things = whatsAt(loc);
+    var things_held = whatsAt(c);
+
+    //things at location of each character
     for(var ti in things) {
       var thing = things[ti];
-      //if(characters.indexOf(thing) < 0) {
-        // taking it
-      //  choices.push({op:"take", args:[c, thing]});
-      //}
+      // taking it
+      /*  choices.push({op:"take", args:[c, thing]});
+      }*/
       //added to include grasp
-      if(characters.indexOf(thing) < 0){
+      if(characters.indexOf(thing) < 0) {
         // grasping person
         //makes sure grasp and ignore only visible if in bank 
         if(loc == "Bank"){
@@ -169,6 +204,27 @@ function generate_choices () {
         }
       }
     } // end loop over things at location of c
+
+    // giving it
+    for (var thi in things_held) {
+        thing_held = things_held[thi];
+
+        for (var ci2 in characters) {
+            var c2 = characters[ci2];
+            if (c != c2 && loc == location_of[c2]) {
+                choices.push({ op: "give", args: [c, c2, thing_held] });
+            }
+        }
+    }
+
+    // wearing it
+    for (var thi in things_held) {
+        thing_held = things_held[thi];
+
+        if (clothing_on[c] != thing_held) {
+            choices.push({ op: "wear", args: [c, thing_held] });
+        }
+    }
 
     // places to move
     for(var li in locations) {
@@ -327,6 +383,26 @@ function go(agent, place) {
 
 }
 
+function wear(agent, thing) {
+
+    var applies = agent == location_of[thing];
+    var text;
+
+    function effects() {
+        clothing_on[agent] = thing;
+    }
+
+    if (clothing_on[agent] == "") {
+        text = agent + " wears " + thing;
+    }
+    else {
+        text = agent + " takes off " + clothing_on[agent] + " and wears " + thing;
+    }
+
+    return { applies: applies, effects: effects, text: text };
+
+}
+
 
 function talk(agent1, agent2) {
 
@@ -342,3 +418,20 @@ function talk(agent1, agent2) {
 
 }
 
+function give(agent1, agent2, thing) {
+    var loc = location_of[agent1];
+    var applies = agent1 == location_of[thing] && loc == location_of[agent2];
+
+    function effects() {
+        location_of[thing] = agent2
+
+        if (clothing_on[agent1] == thing) {
+            clothing_on[agent1] = "";
+        }
+    }
+
+    var text = agent1 + " gives " + thing + " to " + agent2;
+
+    return { applies: applies, effects: effects, text: text };
+
+}
