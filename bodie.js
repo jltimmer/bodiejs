@@ -26,6 +26,10 @@ var clothing_on =
         "You": ""
     }
 
+//variables that affect what passages are seen throughout the game
+var insurance = 0;
+var grasp_or_ignore = 0;
+
   
 
 
@@ -66,6 +70,9 @@ function choiceToString(c) {
         }
         case "wear": {
             return "Wear " + args[1];
+        }
+        case "sent": {
+
         }
         default: return op + " " + args[args.length - 1];
     }
@@ -136,13 +143,16 @@ function cmdToAction(cmd) {
       return grasp(args[0], args[1]);
     }
     case "ignore": {
-      return grasp(args[0], args[1]);
+      return ignore(args[0], args[1]);
     }
     case "go": { 
       return go(args[0], args[1]);
     }
     case "talk": {
       return talk(args[0], args[1]);
+    }
+    case "sent": {
+
     }
  
     default: return undefined;
@@ -196,6 +206,10 @@ function generate_choices () {
         choices.push({op:"grasp", args:[c, thing]});
         choices.push({op:"ignore", args:[c, thing]});
         }
+      }
+      //for option sent
+      else if(grasp_or_ignore == 1){
+        choices.push({op:"sent" });
       }
       else {
         // talking to it
@@ -259,14 +273,50 @@ function take(agent, thing) {
 }
 */
 
+
+/*
+//for response to JS cain, not sure what to do with all these varied responses, I dont think it makes sense to make individual functions like this
+function sent(agent, thing) {
+
+  //var applies = location_of[agent] == location_of[thing];
+
+  function effects() {
+   // location_of[thing] = agent;
+  }
+
+  var text = "Sheriff Hayes sent me this way.";
+
+  return {applies:applies, effects:effects, text:text};
+
+}
+*/
+
+
+
+
+
+
+
 //function for ignoring
 function ignore(agent, thing) {
 
   var applies = location_of[agent] == location_of[thing];
 
   function effects() {
-    
-    location_of[thing] = agent;
+    //checks if the thing the agent wants to grab is a 'human' object
+    var set = 0;
+    for(var i=0; i<nonobjects.length;i++){
+
+      if(thing == nonobjects[i]){
+        var set = 1
+      }
+
+    }
+    if(set == 0){
+
+      location_of[thing] = agent;
+      
+    }
   }
 
   var text = "Awkwardly and flushed, Cain lowers his hand. " +
@@ -277,13 +327,28 @@ function ignore(agent, thing) {
 
 }
 
+
 //function for grasp
 function grasp(agent, thing) {
 
   var applies = location_of[agent] == location_of[thing];
 
+
   function effects() {
-    location_of[thing] = agent;
+    //checks if the thing the agent wants to grab is a 'human' object
+    var set = 0;
+    for(var i=0; i<nonobjects.length;i++){
+
+      if(thing == nonobjects[i]){
+        var set = 1
+      }
+
+    }
+    if(set == 0){
+
+      location_of[thing] = agent;
+
+    }
   }
   
   var text = "You grip his hand firmly and shake. <br /><br />" +
@@ -294,9 +359,12 @@ function grasp(agent, thing) {
             "<q>Luckily for everyone I had this bank constructed with " +
             "brick and steel. They call it 'Jim Cain's luck', but " +
             "luck has nothing to do with it. Anyways. What brings you to my town?</q>";
+  //resembling twine game          
+  //var insurance = 1; 
+  var grasp_or_ignore = 1;
 
   return {applies:applies, effects:effects, text:text};
-
+  
 }
 
 
