@@ -6,7 +6,7 @@ var characters =
     ["You"]
 
 //to see if i can make js cain a character, not treated as an object
-var nonobjects =
+var npcs =
     ["Sheriff Hayes", "JS Cain", "Pat Reddy"]
 
 // State
@@ -70,9 +70,6 @@ function choiceToString(c) {
         }
         case "wear": {
             return "Wear " + args[1];
-        }
-        case "sent": {
-
         }
         default: return op + " " + args[args.length - 1];
     }
@@ -151,10 +148,12 @@ function cmdToAction(cmd) {
     case "talk": {
       return talk(args[0], args[1]);
     }
-    case "sent": {
-
+    case "give": {
+      return give(args[0], args[1], args[2]);
     }
- 
+    case "wear": {
+      return wear(args[0], args[1]);
+    }
     default: return undefined;
   }
 }
@@ -206,10 +205,6 @@ function generate_choices () {
         choices.push({op:"grasp", args:[c, thing]});
         choices.push({op:"ignore", args:[c, thing]});
         }
-      }
-      //for option sent
-      else if(grasp_or_ignore == 1){
-        choices.push({op:"sent" });
       }
       else {
         // talking to it
@@ -274,29 +269,6 @@ function take(agent, thing) {
 */
 
 
-/*
-//for response to JS cain, not sure what to do with all these varied responses, I dont think it makes sense to make individual functions like this
-function sent(agent, thing) {
-
-  //var applies = location_of[agent] == location_of[thing];
-
-  function effects() {
-   // location_of[thing] = agent;
-  }
-
-  var text = "Sheriff Hayes sent me this way.";
-
-  return {applies:applies, effects:effects, text:text};
-
-}
-*/
-
-
-
-
-
-
-
 //function for ignoring
 function ignore(agent, thing) {
 
@@ -305,9 +277,9 @@ function ignore(agent, thing) {
   function effects() {
     //checks if the thing the agent wants to grab is a 'human' object
     var set = 0;
-    for(var i=0; i<nonobjects.length;i++){
+    for(var i=0; i<npcs.length;i++){
 
-      if(thing == nonobjects[i]){
+      if(thing == npcs[i]){
         var set = 1
       }
 
@@ -337,9 +309,9 @@ function grasp(agent, thing) {
   function effects() {
     //checks if the thing the agent wants to grab is a 'human' object
     var set = 0;
-    for(var i=0; i<nonobjects.length;i++){
+    for(var i=0; i<npcs.length;i++){
 
-      if(thing == nonobjects[i]){
+      if(thing == npcs[i]){
         var set = 1
       }
 
