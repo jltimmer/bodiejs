@@ -1,6 +1,6 @@
 var locations = 
   ["Firehouse", "JS Cain's House", "Jail", "Bank",
-    "Bakery", "Chinatown", "Sheriff Location", "TownHall"]
+    "Bakery", "Chinatown", "Town Hall"]
 
 var characters =
     ["You"]
@@ -11,10 +11,10 @@ var npcs =
 
 // State
 var location_of =
-  { "Sheriff Hayes": "Sheriff location",
+  { "Sheriff Hayes": "Town Hall",
     "JS Cain": "Bank",
     "Pat Reddy": "Bakery",
-    "You": "TownHall"
+    "You": "Town Hall"
     
   }
 
@@ -25,6 +25,8 @@ var clothing_on =
         "Pat Reddy": "",
         "You": ""
     }
+
+var locations_visited = [];
 
 //variables that affect what passages are seen throughout the game
 var insurance = 0;
@@ -41,8 +43,7 @@ var conversation_log =
     "Bank": [],
     "Bakery": [],
     "Chinatown": [],
-    "Sheriff Location": [],
-    "TownHall": [],
+    "Town Hall": [],
   }
 
 var current_choices;
@@ -53,11 +54,8 @@ function choiceToString(c) {
     var str = "";
 
     switch (op) {
-        case "grasp": {
-            return "Grasp " + args[1];
-        }
-        case "ignore": {
-            return "Ignore " + args[1];
+        case "take": {
+            return "Take " + args[1];
         }
         case "go": {
             return "Go to " + args[1];
@@ -133,14 +131,8 @@ function cmdToAction(cmd) {
   var {op, args} = cmd;
 
   switch(op) {
-    //case "take": {
-    //  return take(args[0], args[1]);
-    //}
-    case "grasp": {
-      return grasp(args[0], args[1]);
-    }
-    case "ignore": {
-      return ignore(args[0], args[1]);
+    case "take": {
+      return take(args[0], args[1]);
     }
     case "go": { 
       return go(args[0], args[1]);
@@ -194,17 +186,9 @@ function generate_choices () {
     //things at location of each character
     for(var ti in things) {
       var thing = things[ti];
-      // taking it
-      /*  choices.push({op:"take", args:[c, thing]});
-      }*/
-      //added to include grasp
-      if(characters.indexOf(thing) < 0) {
-        // grasping person
-        //makes sure grasp and ignore only visible if in bank 
-        if(loc == "Bank"){
-        choices.push({op:"grasp", args:[c, thing]});
-        choices.push({op:"ignore", args:[c, thing]});
-        }
+       //taking it
+      if (characters.indexOf(thing) < 0) {
+        choices.push({op:"take", args:[c, thing]});
       }
       else {
         // talking to it
@@ -252,7 +236,7 @@ function generate_choices () {
 function begin() { render(); }
 
 
-/*
+
 function take(agent, thing) {
 
   var applies = location_of[agent] == location_of[thing];
@@ -266,7 +250,6 @@ function take(agent, thing) {
   return {applies:applies, effects:effects, text:text};
 
 }
-*/
 
 
 //function for ignoring
@@ -412,10 +395,10 @@ function go(agent, place) {
                "you pick it up. A faded sketch of a girl is inside. " +
                "You pocket the amulet. <br /><br /> This is a desolate place.";
   }
-  else if(place == "Sheriff Location"){
+  /*else if(place == "Sheriff Location"){
     var text = "Sheriff Hayes smiles at you. <br /><br /><br /> " +
                "Yes? How can I help you?";
-  }
+  }*/
   else{
     var text = agent+" goes to "+place;
   }
