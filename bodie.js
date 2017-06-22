@@ -83,11 +83,6 @@ function displayState() {
     if(stuff.length > 0) {
       toRender += "<p>"+ stuff.toString() + "<br>";
     }
-
-    if(conversation_log[locations[i]].length > 0) {
-      toRender += conversation_log[locations[i]][0];
-      toRender += "<br>";
-    }
     toRender += "</p>";
   }
   document.getElementById("state").innerHTML = toRender;
