@@ -187,7 +187,7 @@ function generate_choices () {
     for(var ti in things) {
       var thing = things[ti];
        //taking it
-      if (characters.indexOf(thing) < 0) {
+      if (characters.indexOf(thing) < 0 && npcs.indexOf(thing) < 0) {
         choices.push({op:"take", args:[c, thing]});
       }
       else {
@@ -209,7 +209,7 @@ function generate_choices () {
             }
         }
     }
-
+   /*
     // wearing it
     for (var thi in things_held) {
         thing_held = things_held[thi];
@@ -217,7 +217,7 @@ function generate_choices () {
         if (clothing_on[c] != thing_held) {
             choices.push({ op: "wear", args: [c, thing_held] });
         }
-    }
+    }*/
 
     // places to move
     for(var li in locations) {
