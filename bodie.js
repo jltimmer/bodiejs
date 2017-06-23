@@ -7,14 +7,16 @@ var characters =
 
 //to see if i can make js cain a character, not treated as an object
 var npcs =
-    ["Sheriff Hayes", "JS Cain", "Pat Reddy"]
+    ["Sheriff Hayes", "JS Cain", "Pat Reddy", "William Hang"]
 
 // State
 var location_of =
   { "Sheriff Hayes": "Town Hall",
     "JS Cain": "Bank",
     "Pat Reddy": "Bakery",
-    "You": "Town Hall"
+    "You": "Town Hall",
+    "Amulet": "Chinatown",
+    "William Hang": "Jail"
     
   }
 
@@ -197,15 +199,15 @@ function generate_choices () {
     for (var thi in things_held) {
         thing_held = things_held[thi];
 
-        for (var ci2 in characters) {
-            var c2 = characters[ci2];
+        for (var ci2 in npcs) {
+            var c2 = npcs[ci2];
             if (c != c2 && loc == location_of[c2]) {
                 choices.push({ op: "give", args: [c, c2, thing_held] });
             }
         }
     }
    /*
-    // wearing it
+    // wearing ia
     for (var thi in things_held) {
         thing_held = things_held[thi];
 
@@ -240,7 +242,7 @@ function take(agent, thing) {
     location_of[thing] = agent;
   }
 
-  var text = agent+" takes the "+thing+".";
+  var text = agent+" take the "+thing+".";
 
   return {applies:applies, effects:effects, text:text};
 
@@ -439,6 +441,11 @@ function talk(agent1, agent2) {
 function give(agent1, agent2, thing) {
     var loc = location_of[agent1];
     var applies = agent1 == location_of[thing] && loc == location_of[agent2];
+    var graveYardAcces = 0;
+
+    if(thing == "Amulet" && agent2 == "William Hang"){
+      graveYardAccess = 1;
+    }
 
     function effects() {
         location_of[thing] = agent2
@@ -446,9 +453,20 @@ function give(agent1, agent2, thing) {
         if (clothing_on[agent1] == thing) {
             clothing_on[agent1] = "";
         }
-    }
+        if (graveYardAccess > 0){
+          locations.push("Graveyard");
+          
+        }        
+        
 
-    var text = agent1 + " gives " + thing + " to " + agent2;
+    }
+    if(graveYardAccess > 0){
+       var text = agent1 + " gives " + thing + " to " + agent2 + 
+       ". </br> You now have access to the Graveyard." ;
+    }
+    else{
+       var text = agent1 + " gives " + thing + " to " + agent2;  
+    }
 
     return { applies: applies, effects: effects, text: text };
 
