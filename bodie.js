@@ -16,13 +16,14 @@ var location_of =
     "Pat Reddy": "Bakery",
     "You": "Town Hall",
     "Amulet": "Chinatown",
-    "William Hang": "Jail"
+    "William Hang": "Jail",
+    "Insurance Papers": "Bank"
     
   }
 
 var clothing_on =
     {
-        "Sheriff Hayes": "",
+        "Sheriff Hayes": "key",
         "JS Cain": "",
         "Pat Reddy": "",
         "You": ""
@@ -423,18 +424,20 @@ function wear(agent, thing) {
 
 }
 
-
 function talk(agent1, agent2) {
 
   var loc = location_of[agent1];
   var applies = loc == location_of[agent2];
 
   function effects() {
-    var line = agent1+" says hello to "+agent2;
-    conversation_log[loc] = [line];
+   // var line = agent1+" says hello to "+agent2;
+   // conversation_log[loc] = [line];
   }
+  var text = agent2 + " says hello to " + agent1 + " ^.^ ";
 
-  return {applies:applies, effects:effects, text:""};
+  if(agent1)
+
+  return {applies:applies, effects:effects, text:text};
 
 }
 
