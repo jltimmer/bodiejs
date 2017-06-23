@@ -35,9 +35,6 @@ var locations_visited = [];
 var insurance = 0;
 var grasp_or_ignore = 0;
 
-  
-
-
 var conversation_log =
   {
     "Firehouse": [],
@@ -47,7 +44,17 @@ var conversation_log =
     "Bakery": [],
     "Chinatown": [],
     "Town Hall": [],
+    "Sheriff Hayes": [],
+    "William Hang": [],
   }
+
+var inventory =
+{ 
+  WilliamHang: 0, 
+  SheriffHayes: 0, 
+  Firehouse: 0,
+  You: 0
+}
 
 var current_choices;
 
@@ -242,6 +249,11 @@ function take(agent, thing) {
   function effects() {
     location_of[thing] = agent;
   }
+  if(thing == "Amulet"){//thing is amulet
+    inventory.WilliamHang ++;
+
+  }
+  
 
   var text = agent+" take the "+thing+".";
 
@@ -324,17 +336,28 @@ function grasp(agent, thing) {
 function go(agent, place) {
 
   var applies = true; // for now
-
+  var text = "";
   function effects() {
     location_of[agent] = place;
   }
   //incorporating specific story line
   if(place == "Firehouse"){
-    var text = "The firehouse is empty today, the sun " +
+  if(inventory.You == 0){
+    text = "The firehouse is empty today, the sun " +
                 "gleaming off of its bell. Of interest " +
                 "is a ditch containing what seems to be " +
                 "the housing for a water valve. You try " +
                 "to look inside, but you're stopped by a heavy lock.";
+    inventory.Firehouse ++;
+    }
+    else{
+    text = "You use the key the sheriff gave you to open up " +
+           "the lock on the valve housing.</br ></br>You remove the " +
+           "cover, and sure enough, there's obvious evidence of " +
+           "tampering. You see a flat black hat inside the valve " +
+           "housing as well, similar to a sun hat. Stitched onto " +
+           "the brim is a monogram, <q>SJ</q>. You grab it. ";
+    }
   }
   else if(place == "JS Cain's House"){
     var text = "You knock on the door to no avail. " +
@@ -344,8 +367,26 @@ function go(agent, place) {
 
   }
   else if(place == "Jail"){
-    var text = "The Jail is empty at the moment. " +
-               "Head back to town center. ";
+    if(inventory.WilliamHang == 0){//amulet is not in possesion of you
+      var text = "The man in the jail cell looks almost asleep. " +
+                 "</br ></br >Check somewhere else. ";
+    }
+    else if(inventory.WilliamHang == 1){
+      var text = "Hang looks more awake, so you ask about " +
+                 "the events of the night, but he refuses to talk about that. <q>All I " +
+                 "want is to find my family,</q> is all you  " +
+                 "can get out of him. You reply that he's going " +
+                 "to have to help you out before you can make that " +
+                 "happen. He sits silently on the other side of the bars. " +
+                 "Absently, you pull out the amulet you found and take " +
+                 "another look. </br ></br >Hang's eyes go wide. <q>My god, " +
+                 "that survived the fire? I never suspected - thank you. " +
+                 "Please, can I have it?</q> ";
+    }
+    else if(inventory.WilliamHang == 2){
+      var text = "You've already spoken to the cook. He is turned " +
+                 "away, in the corner of the cell.";
+    }
   }
   else if(place == "Bank"){
     var text = "You enter the imposing Bodie Bank, " +
@@ -433,9 +474,22 @@ function talk(agent1, agent2) {
    // var line = agent1+" says hello to "+agent2;
    // conversation_log[loc] = [line];
   }
-  var text = agent2 + " says hello to " + agent1 + " ^.^ ";
+  var text = agent2 + " says hello to " + agent1 + " ^.^</br ></br >";
 
-  if(agent1)
+  if((inventory.WilliamHang == 2) && (inventory.Firehouse > 0)){
+    text += "</br > You tell the sheriff what Hang told you about " +
+            "the firehouse, and he grimaces.</br ></br >" +
+            "Sheriff Hayes says, <q>I wish he had just told us his story. " +
+            "I can't release him yet, but you should hunt down that lead. " +
+            "Here's the key.</q></br ></br >You pocket it.";
+;
+    inventory.You++;
+  }
+  else if(inventory.Firehouse > 0){
+    text += "</br > Sorry kid, the firehouse is gonna stay locked up " +
+            "tight unless you have a good reason to search it," +
+            " at the firefighters request." ;
+  }
 
   return {applies:applies, effects:effects, text:text};
 
@@ -458,7 +512,7 @@ function give(agent1, agent2, thing) {
         }
         if (graveYardAccess > 0){
           locations.push("Graveyard");
-
+          inventory.WilliamHang ++;
         }        
         
 
