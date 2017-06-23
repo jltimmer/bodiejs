@@ -397,7 +397,7 @@ function go(agent, place) {
                "Yes? How can I help you?";
   }*/
   else{
-    var text = agent+" goes to "+place;
+    var text = agent+" go to "+place;
   }
   return {applies:applies, effects:effects, text:text};
 
@@ -441,12 +441,12 @@ function talk(agent1, agent2) {
 function give(agent1, agent2, thing) {
     var loc = location_of[agent1];
     var applies = agent1 == location_of[thing] && loc == location_of[agent2];
-    var graveYardAcces = 0;
+    var graveYardAccess = 0;
 
     if(thing == "Amulet" && agent2 == "William Hang"){
       graveYardAccess = 1;
     }
-
+//if npc given thing, i want npc to be "wearing" thing
     function effects() {
         location_of[thing] = agent2
 
@@ -455,18 +455,18 @@ function give(agent1, agent2, thing) {
         }
         if (graveYardAccess > 0){
           locations.push("Graveyard");
-          
+
         }        
         
 
     }
-    if(graveYardAccess > 0){
-       var text = agent1 + " gives " + thing + " to " + agent2 + 
-       ". </br> You now have access to the Graveyard." ;
+
+    var text = agent1 + " give " + thing + " to " + agent2;
+    
+    if (graveYardAccess > 0){
+       text += ". </br> You now have access to the Graveyard." ;
     }
-    else{
-       var text = agent1 + " gives " + thing + " to " + agent2;  
-    }
+    
 
     return { applies: applies, effects: effects, text: text };
 
