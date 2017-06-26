@@ -7,7 +7,8 @@ var characters =
 
 //to see if i can make js cain a character, not treated as an object
 var npcs =
-    ["Sheriff Hayes", "JS Cain", "Pat Reddy", "William Hang"]
+    ["Sheriff Hayes", "JS Cain", "Pat Reddy", "William Hang", 
+    "Mrs Perry", "Mr Perry", "Shotgun Johnny"]
 
 // State
 var location_of =
@@ -17,8 +18,11 @@ var location_of =
     "You": "Town Hall",
     "Amulet": "Chinatown",
     "William Hang": "Jail",
-    "Insurance Papers": "Bank"
-    
+    "Insurance Papers": "Bank",
+    "Letter": "Reddy House",
+    "Mrs Perry": "Perry House",
+    "Shotgun Johnny": "Graveyard",
+    "Mr Perry": "Graveyard"
   }
 
 var clothing_on =
@@ -485,6 +489,20 @@ function talk(agent1, agent2) {
             "Here's the key.</q></br ></br >You pocket it.";
     inventory.You++;
     }
+  }
+  else if(agent2 == "Pat Reddy"){
+    text = "<q>The only other thing I can talk about is the Perrys. They're in mourning " +
+           "for their lost property, I suspect.</q></br ></br > Before you can get " +
+           "in a word, he prattles on, </br ></br ><q>Yes, I represent them and " +
+           "their businesses. I am here to... look for any sign of " +
+           "foul play, and to reclaim any found valuables for the Perry " +
+           "estate. A kind and noble pair they are. If you seek them, " +
+           "check their home on Main Street, but I warn you, they're " +
+           "likely to be in a sad state indeed.</q></br ></br >" +
+           "You now have access to the Perry and Reddy House";
+    locations.push("Perry House");
+    locations.push("Reddy House");  
+    inventory.PatReddy ++;
   }
   else if(inventory.Firehouse > 0){
     //need to allow only Sheriff Hayes to say this
