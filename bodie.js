@@ -18,7 +18,7 @@ var location_of =
     "You": "Town Hall",
     "Amulet": "Chinatown",
     "William Hang": "Jail",
-    "Insurance Papers": "Bank",
+    "Insurance Paper": "Bank",
     "Letter": "Reddy House",
     "Mrs Perry": "Perry House",
     "Shotgun Johnny": "Graveyard",
@@ -34,10 +34,6 @@ var clothing_on =
     }
 
 var locations_visited = [];
-
-//variables that affect what passages are seen throughout the game
-var insurance = 0;
-var grasp_or_ignore = 0;
 
 var conversation_log =
   {
@@ -256,18 +252,39 @@ function take(agent, thing) {
   }
   if(thing == "Amulet"){//thing is amulet
     inventory.WilliamHang ++;
-
   }
-  
 
   var text = agent+" take the "+thing+".";
+  if(thing == "Insurance Paper"){
+    var text = "</br ></br >JS Cain reaches to his desk and " +
+                "pulls a sheet of paper from a file. <q>Here's a " +
+                "partial list of losses for the citizens of the town. " +
+                "The damage is huge, exceeding 88,000 dollars...</q>" +
+                "</br ></br >" + agent +" take the "+thing+".</br ></br >" +
+                "Cain continues, <q>I already see something fishy. Notice " +
+                "that Mrs. Perry lost less than almost anyone? Considering " +
+                "that a good number of the lost buildings were in direct " +
+                "competition with Perry... Something seems off. I suggest " +
+                "you look around her bakery.</q>";
+  }
+  else if(thing == "Letter"){
+    var text = "You unfold the letter, and see a sketch of " +
+               "something called the U.S. Hotel, along with an " +
+               "address on Main Street.</br></br>The letter reads</br></br>" +
+               "<q>Pat,</br>This is Palmyre's sketch of our new business, " +
+               "and where we'd like it to be. We think that it'd be a fantastic " +
+               "addition to Bodie's Main Street, and bring quite a pretty penny " +
+               "to everyone involved. We'd like to consider it not only the best " +
+               "hotel in the county, but a roaring center of trade. Now, if only " +
+               "that old man would sell us the rights to his land, we could move " +
+               "forward with the plan...</br>Earnestly,</br>James</q>";
+  }
 
   return {applies:applies, effects:effects, text:text};
 
 }
 
-
-//function for ignoring
+/*
 function ignore(agent, thing) {
 
   var applies = location_of[agent] == location_of[thing];
@@ -296,9 +313,9 @@ function ignore(agent, thing) {
   return {applies:applies, effects:effects, text:text};
 
 }
+*/
 
-
-//function for grasp
+/*
 function grasp(agent, thing) {
 
   var applies = location_of[agent] == location_of[thing];
@@ -334,9 +351,8 @@ function grasp(agent, thing) {
   var grasp_or_ignore = 1;
 
   return {applies:applies, effects:effects, text:text};
-  
 }
-
+*/
 
 function go(agent, place) {
 
@@ -483,12 +499,17 @@ function talk(agent1, agent2) {
 
   if((inventory.WilliamHang == 2) && (inventory.Firehouse > 0)){
     if(agent2 == "Sheriff Hayes"){
-    text += "</br > You tell the sheriff what Hang told you about " +
+      if(inventory.You == 0){
+        text += "</br > You tell the sheriff what Hang told you about " +
             "the firehouse, and he grimaces.</br ></br >" +
             "Sheriff Hayes says, <q>I wish he had just told us his story. " +
             "I can't release him yet, but you should hunt down that lead. " +
             "Here's the key.</q></br ></br >You pocket it.";
-    inventory.You++;
+        inventory.You++;
+      }
+      else{
+        text = agent2 + " says hello to " + agent1 + " ^.^</br ></br >";
+      }
     }
   }
   else if(agent2 == "Pat Reddy"){
@@ -501,13 +522,13 @@ function talk(agent1, agent2) {
            "estate. A kind and noble pair they are. If you seek them, " +
            "check their home on Main Street, but I warn you, they're " +
            "likely to be in a sad state indeed.</q></br ></br >" +
-           "You now have access to the Perry and Reddy House";
+           "<b>You now have access to the Perry and Reddy House</b>";
     locations.push("Perry House");
     locations.push("Reddy House");  
     inventory.PatReddy ++;
     }
   }
-  else if(inventory.Firehouse > 0){
+  else if(inventory.Firehouse == 1){
     //need to allow only Sheriff Hayes to say this
     if(agent2 == "Sheriff Hayes"){ 
       text += "</br > Sorry kid, the firehouse is gonna stay locked up " +
@@ -547,7 +568,7 @@ function give(agent1, agent2, thing) {
       var text = agent1 + " give " + thing + " to " + agent2;
     }
     if (graveYardAccess > 0){
-       text += ". </br> You now have access to the Graveyard." ;
+       text += ". </br></br> <b>You now have access to the Graveyard.</b>" ;
     }
     
     return { applies: applies, effects: effects, text: text };
