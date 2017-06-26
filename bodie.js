@@ -57,7 +57,8 @@ var inventory =
   WilliamHang: 0, 
   SheriffHayes: 0, 
   Firehouse: 0,
-  You: 0
+  You: 0,
+  PatReddy: 0
 }
 
 var current_choices;
@@ -491,6 +492,7 @@ function talk(agent1, agent2) {
     }
   }
   else if(agent2 == "Pat Reddy"){
+    if(inventory.PatReddy == 0){
     text = "<q>The only other thing I can talk about is the Perrys. They're in mourning " +
            "for their lost property, I suspect.</q></br ></br > Before you can get " +
            "in a word, he prattles on, </br ></br ><q>Yes, I represent them and " +
@@ -503,6 +505,7 @@ function talk(agent1, agent2) {
     locations.push("Perry House");
     locations.push("Reddy House");  
     inventory.PatReddy ++;
+    }
   }
   else if(inventory.Firehouse > 0){
     //need to allow only Sheriff Hayes to say this
