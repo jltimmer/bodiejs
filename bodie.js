@@ -477,18 +477,22 @@ function talk(agent1, agent2) {
   var text = agent2 + " says hello to " + agent1 + " ^.^</br ></br >";
 
   if((inventory.WilliamHang == 2) && (inventory.Firehouse > 0)){
+    if(agent2 == "Sheriff Hayes"){
     text += "</br > You tell the sheriff what Hang told you about " +
             "the firehouse, and he grimaces.</br ></br >" +
             "Sheriff Hayes says, <q>I wish he had just told us his story. " +
             "I can't release him yet, but you should hunt down that lead. " +
             "Here's the key.</q></br ></br >You pocket it.";
-;
     inventory.You++;
+    }
   }
   else if(inventory.Firehouse > 0){
-    text += "</br > Sorry kid, the firehouse is gonna stay locked up " +
-            "tight unless you have a good reason to search it," +
-            " at the firefighters request." ;
+    //need to allow only Sheriff Hayes to say this
+    if(agent2 == "Sheriff Hayes"){ 
+      text += "</br > Sorry kid, the firehouse is gonna stay locked up " +
+              "tight unless you have a good reason to search it," +
+              " at the firefighters request." ;
+    }
   }
 
   return {applies:applies, effects:effects, text:text};
@@ -499,32 +503,31 @@ function give(agent1, agent2, thing) {
     var loc = location_of[agent1];
     var applies = agent1 == location_of[thing] && loc == location_of[agent2];
     var graveYardAccess = 0;
-
+    //graveYardAccess variable gives conditions for giving amulet, if we need to include another give this function needs to be edited
     if(thing == "Amulet" && agent2 == "William Hang"){
       graveYardAccess = 1;
     }
-//if npc given thing, i want npc to be "wearing" thing
+    //if npc given thing, i want npc to be "wearing" thing
     function effects() {
+        if(graveYardAccess == 0){}
+        else{
         location_of[thing] = agent2
-
-        if (clothing_on[agent1] == thing) {
-            clothing_on[agent1] = "";
-        }
-        if (graveYardAccess > 0){
-          locations.push("Graveyard");
-          inventory.WilliamHang ++;
-        }        
-        
-
+        locations.push("Graveyard");
+        inventory.WilliamHang ++;
+          if (clothing_on[agent1] == thing) {
+             clothing_on[agent1] = "";
+          }
+        }           
     }
-
-    var text = agent1 + " give " + thing + " to " + agent2;
-    
+    if(graveYardAccess==0){
+      var text = "No thank you, this " + thing + " is not mine.";
+    }
+    else{
+      var text = agent1 + " give " + thing + " to " + agent2;
+    }
     if (graveYardAccess > 0){
        text += ". </br> You now have access to the Graveyard." ;
     }
     
-
     return { applies: applies, effects: effects, text: text };
-
 }
