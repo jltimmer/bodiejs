@@ -50,15 +50,15 @@ var conversation_log =
 
 var inventory =
 { 
-  WilliamHang: 0, 
-  SheriffHayes: 0, 
-  Firehouse: 0,
-  You: 0,
-  PatReddy: 0,
-  Letter: 0,
-  MrPerry: 0,
-  ShotgunJohnny: 0,
-  Hat: 0
+  WilliamHang: 0,  //(=1 means you are in possession of amulet, =2 means you gave amulet to Hang)
+  Firehouse: 0, //(=1 means you have seen locked firehouse)
+  You: 0, //(=1 means you have key to unlock firehouse)
+  PatReddy: 0, //(=1 means Reddy gave you access to Rhouse and Phouse)
+  Letter: 0, //(=1 means you took the letter)
+  MrPerry: 0, //(=1 means Perry has said his intro line)
+  ShotgunJohnny: 0, //(=1 means SJ has said his intro line)
+  Hat: 0, //(=1 means you saw SJ's hat)
+  Insurance: 0 //(=1 means you took the insurance paper)
 }
 
 var current_choices;
@@ -269,6 +269,7 @@ function take(agent, thing) {
                 "that a good number of the lost buildings were in direct " +
                 "competition with Perry... Something seems off. I suggest " +
                 "you look around her bakery.</q>";
+                inventory.Insurance++;
   }
   else if(thing == "Letter"){
     var text = "You unfold the letter, and see a sketch of " +
@@ -468,6 +469,12 @@ function go(agent, place) {
                 "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
                 "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
   }
+  else if(place == "Reddy House"){
+    var text = "The Reddy house is austere and well kept. You go to knock on " +
+               "the door, but at the first rap the door creaks open. " +
+               "</br></br>You go inside the " + place + ".";
+
+  }
   else{
     var text = agent+" go to "+place;
   }
@@ -534,8 +541,8 @@ function talk(agent1, agent2) {
            "likely to be in a sad state indeed.</q></br ></br >" +
            "<b>You now have access to the Perry and Reddy House</b>";
            locations.push("Perry House");
-          locations.push("Reddy House");  
-          inventory.PatReddy ++;
+           locations.push("Reddy House");  
+           inventory.PatReddy ++;
     }
   }
 
@@ -591,7 +598,13 @@ function talk(agent1, agent2) {
              "the evidence.";
     }
   }
-
+  else if((agent2 == "Mrs Perry") && (inventory.Insurance == 1)){
+    text = "You pull out the document that Cain gave you and hand it to her. " +
+             "Mrs. Perry is unimpressed.</br></br><q>Well? Why show me what I already " +
+             "know? JS Cain likely told you I was up to no good, eh? He's " +
+             "hated us for years.</q>";
+  }
+  
   return {effects:effects, text:text};
 }
 
