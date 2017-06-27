@@ -54,7 +54,11 @@ var inventory =
   SheriffHayes: 0, 
   Firehouse: 0,
   You: 0,
-  PatReddy: 0
+  PatReddy: 0,
+  Letter: 0,
+  MrPerry: 0,
+  ShotgunJohnny: 0,
+  Hat: 0
 }
 
 var current_choices;
@@ -277,6 +281,7 @@ function take(agent, thing) {
                "hotel in the county, but a roaring center of trade. Now, if only " +
                "that old man would sell us the rights to his land, we could move " +
                "forward with the plan...</br>Earnestly,</br>James</q>";
+               inventory.Letter ++;
   }
 
   return {effects:effects, text:text};
@@ -376,6 +381,7 @@ function go(agent, place) {
            "tampering. You see a flat black hat inside the valve " +
            "housing as well, similar to a sun hat. Stitched onto " +
            "the brim is a monogram, <q>SJ</q>. You grab it. ";
+           inventory.Hat ++;
     }
   }
   else if(place == "JS Cain's House"){
@@ -453,10 +459,15 @@ function go(agent, place) {
                "you pick it up. A faded sketch of a girl is inside. " +
                "<br /><br /> This is a desolate place.";
   }
-  /*else if(place == "Sheriff Location"){
-    var text = "Sheriff Hayes smiles at you. <br /><br /><br /> " +
-               "Yes? How can I help you?";
-  }*/
+  else if(place == "Perry House"){
+    var text = "Poking your head through the doorframe, you see a woman " +
+                "in a rocking chair, head buried in her hands. Hearing the " +
+                "draft, she looks up and sees you. Her face is lined with " +
+                "stress and weathered by sun.</br><q>Well, it's a bit rude of you " +
+                "to snoop, but come in.</q></br> She speaks with the slightest French " +
+                "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
+                "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
+  }
   else{
     var text = agent+" go to "+place;
   }
@@ -493,15 +504,21 @@ function talk(agent1, agent2) {
   if(agent2 == "Sheriff Hayes"){
     if((inventory.WilliamHang == 2) && (inventory.Firehouse > 0)){
         if(inventory.You == 0){
-         text += "</br > You tell the sheriff what Hang told you about " +
-              "the firehouse, and he grimaces.</br ></br >" +
-              "Sheriff Hayes says, <q>I wish he had just told us his story. " +
-              "I can't release him yet, but you should hunt down that lead. " +
-              "Here's the key.</q></br ></br >You pocket it.";
-         inventory.You++;
+          text += "</br > You tell the sheriff what Hang told you about " +
+                  "the firehouse, and he grimaces.</br ></br >" +
+                  "Sheriff Hayes says, <q>I wish he had just told us his story. " +
+                  "I can't release him yet, but you should hunt down that lead. " +
+                  "Here's the key.</q></br ></br >You pocket it.";
+                  inventory.You++;
         }
-        else{
-          text = agent2 + " says hello to " + agent1 + "</br ></br >";
+        else if(inventory.You == 1){
+          text = "Let me know when you are ready to accuse someone.";
+        }
+        else if(inventory.Firehouse == 1){
+          
+          text = "</br > Sorry kid, the firehouse is gonna stay locked up " +
+                 "tight unless you have a good reason to search it," +
+                 " at the firefighters request." ;
         }
     }
   }
@@ -516,19 +533,65 @@ function talk(agent1, agent2) {
            "check their home on Main Street, but I warn you, they're " +
            "likely to be in a sad state indeed.</q></br ></br >" +
            "<b>You now have access to the Perry and Reddy House</b>";
-    locations.push("Perry House");
-    locations.push("Reddy House");  
-    inventory.PatReddy ++;
+           locations.push("Perry House");
+          locations.push("Reddy House");  
+          inventory.PatReddy ++;
     }
   }
-  else if(inventory.Firehouse == 1){
-    //need to allow only Sheriff Hayes to say this
-    if(agent2 == "Sheriff Hayes"){ 
-      text += "</br > Sorry kid, the firehouse is gonna stay locked up " +
-              "tight unless you have a good reason to search it," +
-              " at the firefighters request." ;
+
+  else if(agent2 == "Mr Perry"){
+    if(inventory.MrPerry == 0){
+    text = "The man with the eyepatch stands straight and tall over " +
+           "a squared off patch of land. He seems to be about sixty, " +
+           "with a strong physique and confident demeanor. He stares " +
+           "silently at the square. As you approach him, he looks you " +
+           "in the eyes and says, <q>This is the spot I've picked for " +
+           "my grave. You may find that odd, but somebody will have " +
+           "to do it. I've decided to take the task into my own hands.</q> " +
+           "</br></br><q>My name is James Perry. Mono County Supervisor. And you're " +
+           "the deputy who's been looking into the fire.</q>";
+           inventory.MrPerry++;
+    }
+    else if((inventory.MrPerry == 1) && (inventory.Letter ==1)){
+      text = "You show him the letter.</br></br>He smiles when you show him the " +
+             "letter he sent to Pat Reddy. </br></br><q>Well, you're " +
+             "quite the investigator, aren't you? Unfortunately, " +
+             "that's not going to hold up in court. It's speculative, illegally " +
+             "obtained, and with Reddy on my side no court will indict me on such " +
+             "evidence. Besides. This is a place of constant change. Fires occur " +
+             "naturally, after all - they destroy the dead wood.</q></br></br> He turns away " +
+             "from you.";
     }
   }
+  else if(agent2 == "Shotgun Johnny"){
+    if(inventory.ShotgunJohnny == 0){
+      text = "The short man strikes a comical figure, with a bulldog face " +
+             "and a round black hat, similar to a sun hat.</br>You begin to " +
+             "walk towards the man, but as you do, he saunters towards you " +
+             "instead, breaking off his conversation. The tall man turns " +
+             "back to the patch of land, brooding.</br>In a thick cornish " +
+             "accent, he hollers, <q>Hello! I see you eyeing me. Well, I " +
+             "decided I'd come over here, eye you instead. The prop's to " +
+             "see how you like it.</q> He gets right up in your face. <q>They " +
+             "call me Shotgun Johnny. Wanna guess why?</q> Menace flickers " +
+             "in his eyes.</br></br>A tense moment passes, and he suddenly breaks out " +
+             "in laughter.</br></br><q>Nah, I'm playin' with ya. What is it you want to say?</q>" +
+             "There's still a bit of edge in his voice.";
+             inventory.ShotgunJohnny++;
+    }
+    else if((inventory.Hat == 1) && (inventory.ShotgunJohnny ==1)){
+      text = "You show him the hat you found in the firehouse.</br></br><q>Yeah, " +
+             "that's me hat...</q></br></br>Johnny blinks.</br></br><q>Where'd you find " +
+             "that? I have another but that's my favorite. I got a prop " +
+             "for ya - give it back? Please?</q></br></br>He realizes that he's " +
+             "been made. <q></br></br>Damn. Alright, fine. I was there that night, " +
+             "but you can't pin the arson on me. There's no way I could " +
+             "have set the fire and sabotaged the water main at once. Now, " +
+             "can I at least have my hat back?</q></br></br>You refuse to give him " +
+             "the evidence.";
+    }
+  }
+
   return {effects:effects, text:text};
 }
 
