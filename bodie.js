@@ -391,7 +391,7 @@ function go(agent, place) {
                  "</br ></br >Check somewhere else. ";
     }
     else if(inventory.WilliamHang == 1){
-      var text = "Hang looks more awake, so you ask about " +
+      var text = "Hang looks awake, so you ask about " +
                  "the events of the night, but he refuses to talk about that. <q>All I " +
                  "want is to find my family,</q> is all you  " +
                  "can get out of him. You reply that he's going " +
@@ -451,7 +451,7 @@ function go(agent, place) {
                "outside but fairly preserved inside. On a ramshackle " +
                "desk is a wooden amulet, on a twine string. Perplexed, " +
                "you pick it up. A faded sketch of a girl is inside. " +
-               "You pocket the amulet. <br /><br /> This is a desolate place.";
+               "<br /><br /> This is a desolate place.";
   }
   /*else if(place == "Sheriff Location"){
     var text = "Sheriff Hayes smiles at you. <br /><br /><br /> " +
@@ -484,27 +484,25 @@ function wear(agent, thing) {
 }
 
 function talk(agent1, agent2) {
-    
 
   function effects() {
    // var line = agent1+" says hello to "+agent2;
    // conversation_log[loc] = [line];
   }
-  var text = agent2 + " says hello to " + agent1 + " ^.^</br ></br >";
-
-  if((inventory.WilliamHang == 2) && (inventory.Firehouse > 0)){
-    if(agent2 == "Sheriff Hayes"){
-      if(inventory.You == 0){
-        text += "</br > You tell the sheriff what Hang told you about " +
-            "the firehouse, and he grimaces.</br ></br >" +
-            "Sheriff Hayes says, <q>I wish he had just told us his story. " +
-            "I can't release him yet, but you should hunt down that lead. " +
-            "Here's the key.</q></br ></br >You pocket it.";
-        inventory.You++;
-      }
-      else{
-        text = agent2 + " says hello to " + agent1 + " ^.^</br ></br >";
-      }
+  var text = agent2 + " says hello to " + agent1 + "</br ></br >";
+  if(agent2 == "Sheriff Hayes"){
+    if((inventory.WilliamHang == 2) && (inventory.Firehouse > 0)){
+        if(inventory.You == 0){
+         text += "</br > You tell the sheriff what Hang told you about " +
+              "the firehouse, and he grimaces.</br ></br >" +
+              "Sheriff Hayes says, <q>I wish he had just told us his story. " +
+              "I can't release him yet, but you should hunt down that lead. " +
+              "Here's the key.</q></br ></br >You pocket it.";
+         inventory.You++;
+        }
+        else{
+          text = agent2 + " says hello to " + agent1 + "</br ></br >";
+        }
     }
   }
   else if(agent2 == "Pat Reddy"){
@@ -531,9 +529,7 @@ function talk(agent1, agent2) {
               " at the firefighters request." ;
     }
   }
-
   return {effects:effects, text:text};
-
 }
 
 function give(agent1, agent2, thing) {
