@@ -518,16 +518,28 @@ function talk(agent1, agent2) {
                   "Here's the key.</q></br ></br >You pocket it.";
                   inventory.You++;
         }
-        else if(inventory.You == 1){
-          text = "Let me know when you are ready to accuse someone.";
-        }
-        else if(inventory.Firehouse == 1){
-          
-          text = "</br > Sorry kid, the firehouse is gonna stay locked up " +
-                 "tight unless you have a good reason to search it," +
-                 " at the firefighters request." ;
-        }
     }
+        /* attempt at accusing
+        else if(inventory.You == 1){
+          if(inventory.WilliamHang == 2) {
+            if(inventory.Hat == 1){
+              text = "Looks like you have enough evidence to accuse Shotgun Johnny";
+            }
+            else if((inventory.Letter ==1) && (inventory.Insurance ==1)){
+              text = "Looks like you have enough evidence to accuse  Shotgun Johnny " +
+                     " and The Perrys."
+            }
+            else{
+              text = "Looks like you have enough evidence to accuse William Hang";
+            }
+          }
+        }
+        */
+      else if(inventory.Firehouse == 1){
+        text = "</br > Sorry kid, the firehouse is gonna stay locked up " +
+               "tight unless you have a good reason to search it," +
+               " at the firefighters request." ;
+      }
   }
   else if(agent2 == "Pat Reddy"){
     if(inventory.PatReddy == 0){
