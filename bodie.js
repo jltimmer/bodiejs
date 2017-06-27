@@ -162,7 +162,7 @@ function applyOper(cmd) {
 
   var action = cmdToAction(cmd);
   
-  if(action != undefined && action.applies) { 
+  if(action != undefined) { 
     action.effects();
     displayText = action.text;
   }
@@ -185,19 +185,20 @@ function generate_choices () {
   for(var ci in characters) {
     var c = characters[ci];
     var loc = location_of[c];
-    var things = whatsAt(loc);
+    var things = whatsAt(loc);  
     var things_held = whatsAt(c);
 
     //things at location of each character
     for(var ti in things) {
       var thing = things[ti];
        //taking it
-      if (characters.indexOf(thing) < 0 && npcs.indexOf(thing) < 0) {
+      if (characters.indexOf(thing) < 0 && npcs.indexOf(thing) < 0 && 
+          loc == location_of[thing]) {
         choices.push({op:"take", args:[c, thing]});
       }
       else {
         // talking to it
-        if(thing != c) {
+        if(thing != c && location_of[c] == location_of[thing]) {
           choices.push({op:"talk", args:[c, thing]});
         }
       }
@@ -209,17 +210,17 @@ function generate_choices () {
 
         for (var ci2 in npcs) {
             var c2 = npcs[ci2];
-            if (c != c2 && loc == location_of[c2]) {
+            if (c != c2 && loc == location_of[c2] && c == location_of[thing_held]) {
                 choices.push({ op: "give", args: [c, c2, thing_held] });
             }
         }
     }
    /*
-    // wearing ia
+    // wearing it
     for (var thi in things_held) {
         thing_held = things_held[thi];
 
-        if (clothing_on[c] != thing_held) {
+        if (clothing_on[c] != thing_held && c == location_of[thing_held]) {
             choices.push({ op: "wear", args: [c, thing_held] });
         }
     }*/
@@ -244,20 +245,16 @@ function begin() { render(); }
 
 function take(agent, thing) {
 
-  var applies = location_of[agent] == location_of[thing];
-
   function effects() {
     location_of[thing] = agent;
   }
   if(thing == "Amulet"){//thing is amulet
     inventory.WilliamHang ++;
-
   }
-  
 
   var text = agent+" take the "+thing+".";
 
-  return {applies:applies, effects:effects, text:text};
+  return {effects:effects, text:text};
 
 }
 
@@ -334,8 +331,7 @@ function grasp(agent, thing) {
 
 
 function go(agent, place) {
-
-  var applies = true; // for now
+    
   var text = "";
   function effects() {
     location_of[agent] = place;
@@ -441,13 +437,12 @@ function go(agent, place) {
   else{
     var text = agent+" go to "+place;
   }
-  return {applies:applies, effects:effects, text:text};
+  return {effects:effects, text:text};
 
 }
 
 function wear(agent, thing) {
-
-    var applies = agent == location_of[thing];
+    
     var text;
 
     function effects() {
@@ -461,14 +456,12 @@ function wear(agent, thing) {
         text = agent + " takes off " + clothing_on[agent] + " and wears " + thing;
     }
 
-    return { applies: applies, effects: effects, text: text };
+    return { effects: effects, text: text };
 
 }
 
 function talk(agent1, agent2) {
-
-  var loc = location_of[agent1];
-  var applies = loc == location_of[agent2];
+    
 
   function effects() {
    // var line = agent1+" says hello to "+agent2;
@@ -495,13 +488,12 @@ function talk(agent1, agent2) {
     }
   }
 
-  return {applies:applies, effects:effects, text:text};
+  return {effects:effects, text:text};
 
 }
 
 function give(agent1, agent2, thing) {
-    var loc = location_of[agent1];
-    var applies = agent1 == location_of[thing] && loc == location_of[agent2];
+    
     var graveYardAccess = 0;
     //graveYardAccess variable gives conditions for giving amulet, if we need to include another give this function needs to be edited
     if(thing == "Amulet" && agent2 == "William Hang"){
@@ -529,5 +521,5 @@ function give(agent1, agent2, thing) {
        text += ". </br> You now have access to the Graveyard." ;
     }
     
-    return { applies: applies, effects: effects, text: text };
+    return { effects: effects, text: text };
 }
