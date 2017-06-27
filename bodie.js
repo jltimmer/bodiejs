@@ -311,10 +311,6 @@ function ignore(agent, thing) {
     }
   }
 
-  var text = "Awkwardly and flushed, Cain lowers his hand. " +
-             "<q>Yes, well.</q> Anger flashes for a moment " +
-             "behind his pale eyes. <q>What brings you to my town?</q>";
-
   return {applies:applies, effects:effects, text:text};
 
 }
@@ -324,7 +320,6 @@ function ignore(agent, thing) {
 function grasp(agent, thing) {
 
   var applies = location_of[agent] == location_of[thing];
-
 
   function effects() {
     //checks if the thing the agent wants to grab is a 'human' object
@@ -342,19 +337,6 @@ function grasp(agent, thing) {
 
     }
   }
-  
-  var text = "You grip his hand firmly and shake. <br /><br />" +
-            "<br /> <q>You've come at a particularly " +
-            "unfortunate time. Bodie never offers the comforts " +
-            "of the city, but it's usually more... welcoming than " +
-            "this.</q><br /> He gestures out the window at the burned street. " +
-            "<q>Luckily for everyone I had this bank constructed with " +
-            "brick and steel. They call it 'Jim Cain's luck', but " +
-            "luck has nothing to do with it. Anyways. What brings you to my town?</q>";
-  //resembling twine game          
-  //var insurance = 1; 
-  var grasp_or_ignore = 1;
-
   return {applies:applies, effects:effects, text:text};
 }
 */
@@ -517,6 +499,9 @@ function talk(agent1, agent2) {
                   "I can't release him yet, but you should hunt down that lead. " +
                   "Here's the key.</q></br ></br >You pocket it.";
                   inventory.You++;
+        }
+        else if(inventory.You == 1){
+          text = "Let me know when you are ready to accuse someone.";
         }
     }
         /* attempt at accusing
