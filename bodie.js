@@ -10,7 +10,6 @@ var npcs =
   ["Sheriff Hayes", "JS Cain", "Pat Reddy", "William Hang",
     "Mrs Perry", "Mr Perry", "Shotgun Johnny"]
     
-
 // State
 var location_of =
   {
@@ -532,25 +531,15 @@ function talk(agent1, agent2) {
           knowledge.You++;
         }
         else if (knowledge.You == 1) {
-          text = "Let me know when you are ready to accuse someone.";
-        }
-      }
-      /* attempt at accusing
-      else if(inventory.You == 1){
-        if(inventory.WilliamHang == 2) {
-          if(inventory.Hat == 1){
-            text = "Looks like you have enough evidence to accuse Shotgun Johnny";
+          text = "Congratulations you can now accuse William Hang of arson.</br></br>";
+          if(knowledge.Hat == 1){
+            text += "Congratulations you can now accuse Shotgun Johnny of arson.</br></br>";
           }
-          else if((inventory.Letter ==1) && (inventory.Insurance ==1)){
-            text = "Looks like you have enough evidence to accuse  Shotgun Johnny " +
-                   " and The Perrys."
-          }
-          else{
-            text = "Looks like you have enough evidence to accuse William Hang";
+          if((knowledge.Letter == 1) && (knowledge.Insurance == 1)){
+            text += "Congratulations you can now accuse Shotgun Johnny and the Perrys of arson.</br></br>"
           }
         }
       }
-      */
       else if (knowledge.Firehouse == 1) {
         text = "</br > Sorry kid, the firehouse is gonna stay locked up " +
           "tight unless you have a good reason to search it," +
