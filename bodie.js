@@ -49,19 +49,18 @@ var conversation_log =
     "Sheriff Hayes": [],
     "William Hang": [],
   }
-// 0 -> unknown 1 -> have 2 -> gave williamhang
-// 0 -> unknown
+
 var knowledge =
   {
-    WilliamHang: "unknown",  //fixed(=1 means you are in possession of amulet, =2 means you gave amulet to Hang)
-    Firehouse: "unknown", //fixed(=1 means you have seen locked firehouse)
-    You: "unknown", //fixed(=1 means you have key to unlock firehouse)
-    PatReddy: "unknown", //fixed(=1 means Reddy gave you access to Rhouse and Phouse)
-    Letter: "unknown", //fixed(=1 means you took the letter)
-    MrPerry: "unknown", //fixed(=1 means Perry has said his intro line)
-    ShotgunJohnny: "unknown", //fixed(=1 means SJ has said his intro line)
-    Hat: "unknown", //(=1 means you saw SJ's hat)
-    Insurance: "unknown" //(=1 means you took the insurance paper)
+    WilliamHang: "unknown",  
+    Firehouse: "unknown", 
+    You: "unknown", 
+    PatReddy: "unknown", 
+    Letter: "unknown", 
+    MrPerry: "unknown", 
+    ShotgunJohnny: "unknown", 
+    Hat: "unknown", 
+    Insurance: "unknown" 
   }
 
 var current_choices;
@@ -272,29 +271,29 @@ function take(agent, thing) {
 
     if (thing == "Insurance Paper") {
       text = "</br ></br >JS Cain reaches to his desk and " +
-        "pulls a sheet of paper from a file. <q>Here's a " +
-        "partial list of losses for the citizens of the town. " +
-        "The damage is huge, exceeding 88,000 dollars...</q>" +
-        "</br ></br >" + agent + " take the " + thing + ".</br ></br >" +
-        "Cain continues, <q>I already see something fishy. Notice " +
-        "that Mrs. Perry lost less than almost anyone? Considering " +
-        "that a good number of the lost buildings were in direct " +
-        "competition with Perry... Something seems off. I suggest " +
-        "you look around her bakery.</q>";
-      knowledge.Insurance = "known";
+             "pulls a sheet of paper from a file. <q>Here's a " +
+             "partial list of losses for the citizens of the town. " +
+             "The damage is huge, exceeding 88,000 dollars...</q>" +
+             "</br ></br >" + agent + " take the " + thing + ".</br ></br >" +
+             "Cain continues, <q>I already see something fishy. Notice " +
+             "that Mrs. Perry lost less than almost anyone? Considering " +
+             "that a good number of the lost buildings were in direct " +
+             "competition with Perry... Something seems off. I suggest " +
+             "you look around her bakery.</q>";
+             knowledge.Insurance = "known";
     }
     else if (thing == "Letter") {
       text = "You unfold the letter, and see a sketch of " +
-        "something called the U.S. Hotel, along with an " +
-        "address on Main Street.</br></br>The letter reads</br></br>" +
-        "<q>Pat,</br>This is Palmyre's sketch of our new business, " +
-        "and where we'd like it to be. We think that it'd be a fantastic " +
-        "addition to Bodie's Main Street, and bring quite a pretty penny " +
-        "to everyone involved. We'd like to consider it not only the best " +
-        "hotel in the county, but a roaring center of trade. Now, if only " +
-        "that old man would sell us the rights to his land, we could move " +
-        "forward with the plan...</br>Earnestly,</br>James</q>";
-      knowledge.Letter = "known";
+             "something called the U.S. Hotel, along with an " +
+             "address on Main Street.</br></br>The letter reads</br></br>" +
+             "<q>Pat,</br>This is Palmyre's sketch of our new business, " +
+             "and where we'd like it to be. We think that it'd be a fantastic " +
+             "addition to Bodie's Main Street, and bring quite a pretty penny " +
+             "to everyone involved. We'd like to consider it not only the best " +
+             "hotel in the county, but a roaring center of trade. Now, if only " +
+             "that old man would sell us the rights to his land, we could move " +
+             "forward with the plan...</br>Earnestly,</br>James</q>";
+             knowledge.Letter = "known";
     }
 
     return text;
@@ -369,110 +368,110 @@ function go(agent, place) {
     if (place == "Firehouse") {
       if (knowledge.You == "unknown") {
         text = "The firehouse is empty today, the sun " +
-          "gleaming off of its bell. Of interest " +
-          "is a ditch containing what seems to be " +
-          "the housing for a water valve. You try " +
-          "to look inside, but you're stopped by a heavy lock.";
-        knowledge.Firehouse = "known";
+               "gleaming off of its bell. Of interest " +
+               "is a ditch containing what seems to be " +
+               "the housing for a water valve. You try " +
+               "to look inside, but you're stopped by a heavy lock.";
+               knowledge.Firehouse = "known";
       }
       else {
         text = "You use the key the sheriff gave you to open up " +
-          "the lock on the valve housing.</br ></br>You remove the " +
-          "cover, and sure enough, there's obvious evidence of " +
-          "tampering. You see a flat black hat inside the valve " +
-          "housing as well, similar to a sun hat. Stitched onto " +
-          "the brim is a monogram, <q>SJ</q>. You grab it. ";
-        knowledge.Hat = "known";
+               "the lock on the valve housing.</br ></br>You remove the " +
+               "cover, and sure enough, there's obvious evidence of " +
+               "tampering. You see a flat black hat inside the valve " +
+               "housing as well, similar to a sun hat. Stitched onto " +
+               "the brim is a monogram, <q>SJ</q>. You grab it. ";
+               knowledge.Hat = "known";
       }
     }
     else if (place == "JS Cain's House") {
       text = "You knock on the door to no avail. " +
-        "Peering into the lavish windows, " +
-        "you see that nobody's home." +
-        "You should check elsewhere.";
+             "Peering into the lavish windows, " +
+             "you see that nobody's home." +
+             "You should check elsewhere.";
 
     }
     else if (place == "Jail") {
       if (knowledge.WilliamHang == "unknown") {//amulet is not in possesion of you
         text = "The man in the jail cell looks almost asleep. " +
-          "</br ></br >Check somewhere else. ";
+               "</br ></br >Check somewhere else. ";
       }
       else if (knowledge.WilliamHang == "has") {
         text = "Hang looks awake, so you ask about " +
-          "the events of the night, but he refuses to talk about that. <q>All I " +
-          "want is to find my family,</q> is all you  " +
-          "can get out of him. You reply that he's going " +
-          "to have to help you out before you can make that " +
-          "happen. He sits silently on the other side of the bars. " +
-          "Absently, you pull out the amulet you found and take " +
-          "another look. </br ></br >Hang's eyes go wide. <q>My god, " +
-          "that survived the fire? I never suspected - thank you. " +
-          "Please, can I have it?</q> ";
+               "the events of the night, but he refuses to talk about that. <q>All I " +
+               "want is to find my family,</q> is all you  " +
+               "can get out of him. You reply that he's going " +
+               "to have to help you out before you can make that " +
+               "happen. He sits silently on the other side of the bars. " +
+               "Absently, you pull out the amulet you found and take " +
+               "another look. </br ></br >Hang's eyes go wide. <q>My god, " +
+               "that survived the fire? I never suspected - thank you. " +
+               "Please, can I have it?</q> ";
       }
       else if (knowledge.WilliamHang == "given") {
         text = "You've already spoken to the cook. He is turned " +
-          "away, in the corner of the cell.";
+               "away, in the corner of the cell.";
       }
     }
     else if (place == "Bank") {
       text = "You enter the imposing Bodie Bank, " +
-        "the most modern and expensive of all " +
-        "the buildings in town. The safe stands " +
-        "severe in the center, between brick and " +
-        "steel bar. Facing the opposite wall is a " +
-        "redwood desk. <br /><br />" +
+             "the most modern and expensive of all " +
+             "the buildings in town. The safe stands " +
+             "severe in the center, between brick and " +
+             "steel bar. Facing the opposite wall is a " +
+             "redwood desk. <br /><br />" +
 
-        "Sitting there is a straight backed man with " +
-        "salt and pepper hair, furiously filing documents " +
-        "and flipping through files. He jerks to a stop as " +
-        "you approach, and stands, stiffly. He turns to you " +
-        "and you notice his gaunt face and pale eyes. " +
-        "<q>Greetings</q>, he says in a soft lilt. " +
-        "<q>My name is James Stuart Cain.</q> He paces " +
-        "towards you and offers his hand.";
+             "Sitting there is a straight backed man with " +
+             "salt and pepper hair, furiously filing documents " +
+             "and flipping through files. He jerks to a stop as " +
+             "you approach, and stands, stiffly. He turns to you " +
+             "and you notice his gaunt face and pale eyes. " +
+             "<q>Greetings</q>, he says in a soft lilt. " +
+             "<q>My name is James Stuart Cain.</q> He paces " +
+             "towards you and offers his hand.";
     }
     else if (place == "Bakery") {
       text = "You enter the ruins of the bakery. Scorched " +
-        "bricks litter the ground, and white ash is " +
-        "mixed into the dirt. The blaze that took out " +
-        "half of Bodie started here. You see gnarled " +
-        "cast iron about, indicating you're in the kitchen." +
-        "<br /><br /> As you make your way through the " +
-        "kitchen, you come across a one armed, portly man. " +
-        "He is wearing a suit, despite the ashy ruin you " +
-        "two stand in. Before you can say anything, he " +
-        "notices you, and begins to speak rapidly. <br /><br />" +
-        "<q>Oh, hello! Pat Reddy, at your service,</q><br /><br />" +
-        "he says in an irish brogue, whiskers quivering " +
-        "when he smirks.<br /><br /> <q>How can I help you?</q> ";
+             "bricks litter the ground, and white ash is " +
+             "mixed into the dirt. The blaze that took out " +
+             "half of Bodie started here. You see gnarled " +
+             "cast iron about, indicating you're in the kitchen." +
+             "<br /><br /> As you make your way through the " +
+             "kitchen, you come across a one armed, portly man. " +
+             "He is wearing a suit, despite the ashy ruin you " +
+             "two stand in. Before you can say anything, he " +
+             "notices you, and begins to speak rapidly. <br /><br />" +
+             "<q>Oh, hello! Pat Reddy, at your service,</q><br /><br />" +
+             "he says in an irish brogue, whiskers quivering " +
+             "when he smirks.<br /><br /> <q>How can I help you?</q> ";
     }
     else if (place == "Chinatown") {
       text = "You're struck by the massive amount of damage done " +
-        "to the Chinatown of Bodie, north of town. It seems " +
-        "that the fire truly torched the neighborhood.<br />You " +
-        "recall a faint memory of a celebration here, with " +
-        "brightly colored ribbons hanging over the streets " +
-        "and a huge parade. Only an echo remains, in the few " +
-        "red roofed homes miraculously left standing. <br /><br />" +
-        "You investigate the nearest shack, torched on the " +
-        "outside but fairly preserved inside. On a ramshackle " +
-        "desk is a wooden amulet, on a twine string. Perplexed, " +
-        "you pick it up. A faded sketch of a girl is inside. " +
-        "<br /><br /> This is a desolate place.";
+             "to the Chinatown of Bodie, north of town. It seems " +
+             "that the fire truly torched the neighborhood.<br />You " +
+             "recall a faint memory of a celebration here, with " +
+             "brightly colored ribbons hanging over the streets " +
+             "and a huge parade. Only an echo remains, in the few " +
+             "red roofed homes miraculously left standing. <br /><br />" +
+             "You investigate the nearest shack, torched on the " +
+             "outside but fairly preserved inside. On a ramshackle " +
+             "desk is a wooden amulet, on a twine string. Perplexed, " +
+             "you pick it up. A faded sketch of a girl is inside. " +
+             "<br /><br /> This is a desolate place.";
     }
     else if (place == "Perry House") {
       text = "Poking your head through the doorframe, you see a woman " +
-        "in a rocking chair, head buried in her hands. Hearing the " +
-        "draft, she looks up and sees you. Her face is lined with " +
-        "stress and weathered by sun.</br><q>Well, it's a bit rude of you " +
-        "to snoop, but come in.</q></br> She speaks with the slightest French " +
-        "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
-        "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
+             "in a rocking chair, head buried in her hands. Hearing the " +
+             "draft, she looks up and sees you. Her face is lined with " +
+             "stress and weathered by sun.</br><q>Well, it's a bit rude of you " +
+             "to snoop, but come in.</q></br> She speaks with the slightest French " +
+             "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
+             "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
     }
     else if (place == "Reddy House") {
       text = "The Reddy house is austere and well kept. You go to knock on " +
-        "the door, but at the first rap the door creaks open. " +
-        "</br></br>You go inside the " + place + ".";
+             "the door, but at the first rap the door creaks open. " +
+             "</br></br>You go inside the " + place + ".";
 
     }
     else {
@@ -525,11 +524,11 @@ function talk(agent1, agent2) {
       if ((knowledge.WilliamHang == "given") && (knowledge.Firehouse == "known")) {
         if (knowledge.You == "unknown") {
           text += "</br > You tell the sheriff what Hang told you about " +
-            "the firehouse, and he grimaces.</br ></br >" +
-            "Sheriff Hayes says, <q>I wish he had just told us his story. " +
-            "I can't release him yet, but you should hunt down that lead. " +
-            "Here's the key.</q></br ></br >You pocket it.";
-          knowledge.You = "known";
+                  "the firehouse, and he grimaces.</br ></br >" +
+                  "Sheriff Hayes says, <q>I wish he had just told us his story. " +
+                  "I can't release him yet, but you should hunt down that lead. " +
+                  "Here's the key.</q></br ></br >You pocket it.";
+                  knowledge.You = "known";
         }
         else if (knowledge.You == "known") {
           text = "Congratulations you have enough evidence to accuse William Hang of arson.</br></br>";
