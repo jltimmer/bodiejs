@@ -63,6 +63,12 @@ var knowledge =
     Insurance: "unknown" 
   }
 
+var inventory = 
+  {
+    "Sheriff Hayes": "",
+    "Town Hall": ""
+  }
+
 var current_choices;
 
 
@@ -92,7 +98,7 @@ function choiceToString(c) {
 
 function displayState() {
   toRender = "";
-
+  state = [];
   // stuff at all locations
   for (var i = 0; i < locations.length; i++) {
     var stuff = whatsAt(locations[i]);
@@ -100,10 +106,30 @@ function displayState() {
     if (stuff.length > 0) {
       toRender += "<p>" + stuff.toString() + "<br>";
     }
-    toRender += "</p>";
-  }
-  document.getElementById("state").innerHTML = toRender;
 
+    toRender += "</p>";
+    
+    if (i == Math.floor(locations.length / 2)) {
+      document.getElementById("col1").innerHTML = toRender;
+      console.log(toRender)
+      toRender = "";
+    }
+  }
+
+  document.getElementById("col2").innerHTML = toRender;
+  
+  //document.getElementById("state").innerHTML = toRender;
+}
+
+function displayInventory() {
+  toRender = "";
+  
+  for (var key in inventory) {
+    toRender += key + "<br>";
+  }
+
+  // inventory of knowledge?
+  document.getElementById("invcol1").innerHTML = toRender;
 }
 
 function displayChoices() {
@@ -125,6 +151,7 @@ function displayChoices() {
 function render() {
   current_choices = generate_choices();
   displayState();
+  //displayInventory();
   displayChoices();
 }
 
