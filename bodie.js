@@ -7,7 +7,7 @@ var characters =
 
 //to see if i can make js cain a character, not treated as an object
 var npcs =
-  ["Sheriff Hayes", "JS Cain", "Pat Reddy", "William Hang",
+  ["Sheriff Hayes", "JS Cain", "Pat Wesley", "William Hang",
     "Mrs Perry", "Mr Perry", "Shotgun Johnny"]
     
 // State
@@ -15,12 +15,12 @@ var location_of =
   {
     "Sheriff Hayes": "Town Hall",
     "JS Cain": "Bank",
-    "Pat Reddy": "Bakery",
+    "Pat Wesley": "Bakery",
     "You": "Town Hall",
     "Amulet": "Chinatown",
     "William Hang": "Jail",
     "Insurance Paper": "Bank",
-    "Letter": "Reddy House",
+    "Letter": "Wesley House",
     "Mrs Perry": "Perry House",
     "Shotgun Johnny": "Graveyard",
     "Mr Perry": "Graveyard",
@@ -31,7 +31,7 @@ var clothing_on = //for wear function
   {
     "Sheriff Hayes": "",
     "JS Cain": "",
-    "Pat Reddy": "",
+    "Pat Wesley": "",
     "You": ""
   }
 
@@ -55,7 +55,7 @@ var knowledge =
     ["William Hang"]: "unknown",  
     Firehouse: "unknown", 
     You: "unknown", 
-    PatReddy: "unknown", 
+    PatWesley: "unknown", 
     Letter: "unknown", 
     MrPerry: "unknown", 
     ShotgunJohnny: "unknown", 
@@ -82,7 +82,6 @@ var inventory =
 
 var current_choices;
 
-
 function choiceToString(c) {
   var { op, args } = c;
   var str = "";
@@ -102,6 +101,12 @@ function choiceToString(c) {
     }
     case "wear": {
       return "Wear " + args[1];
+    }
+    case "ask": {
+      return "Ask " + args[1] + " about " + args[2];
+    }
+    case "tell": {
+      return "Tell " + args[1] + " about " + args[2];
     }
     default: return op + " " + args[args.length - 1];
   }
@@ -153,18 +158,26 @@ function describeThing(t) {
 
 function displayChoices() {
   // current_choices = generate_choices();
-  toRender = "";
+  toRenderAction = "";
+  toRenderConversation = "";
   for (var i = 0; i < current_choices.length; i++) {
     var choice = current_choices[i];
     var last_character;
     if (choice.args[0] != last_character) {
-      toRender += "<br>" + "Actions for " + choice.args[0] + "<br>";
+      toRenderAction += "<br>" + "Actions for " + choice.args[0] + "<br>";
+      toRenderConversation += "<br>" + "Conversation for " + choice.args[0] + "<br>";
     }
-    toRender += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
-
+    //seperate operators for conversation and action
+    if (choice.op == "talk" || choice.op == "ask"){
+      toRenderConversation += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
+    }
+    else{
+      toRenderAction += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
+    }
     last_character = choice.args[0];
   }
-  document.getElementById("choices").innerHTML = toRender;
+  document.getElementById("actions").innerHTML = toRenderAction;
+  document.getElementById("conversation").innerHTML = toRenderConversation;
 }
 
 function render() {
@@ -203,6 +216,9 @@ function cmdToAction(cmd) {
     }
     case "wear": {
       return wear(args[0], args[1]);
+    }
+    case "ask": {
+      return ask(args[0], args[1], args[2]);
     }
     default: return undefined;
   }
@@ -269,19 +285,11 @@ function generate_choices() {
         if (give(c, c2, thing_held).applies) {
           choices.push({ op: "give", args: [c, c2, thing_held] });
         }
+        if (ask(c, c2, thing_held).applies) {
+          choices.push({ op: "ask", args: [c, c2, thing_held] });
+        }
       }
     }
-    /*
-     // wearing it
-     for (var thi in things_held) {
-         thing_held = things_held[thi];
- 
-         //if (clothing_on[c] != thing_held && c == location_of[thing_held]) {
-         if (wear(c, thing_held).applies) {
-             choices.push({ op: "wear", args: [c, thing_held] });
-         }
-     }*/
-
     // places to move
     for (var li in locations) {
       var l = locations[li];
@@ -299,6 +307,16 @@ function generate_choices() {
 
 function begin() { render(); }
 
+function ask(agent, npc, thing) {
+  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
+  var text = "";
+  function effects() {
+    var text = agent + " ask " + npc + " about the " + thing + ".</br></br>";
+    text += findQuip(npc, thing);
+    return text;
+  }
+  return { applies: applies, effects: effects, text: text };
+}
 
 
 function take(agent, thing) {
@@ -349,57 +367,6 @@ function take(agent, thing) {
 
 }
 
-/*
-function ignore(agent, thing) {
-
-  var applies = location_of[agent] == location_of[thing];
-
-  function effects() {
-    //checks if the thing the agent wants to grab is a 'human' object
-    var set = 0;
-    for(var i=0; i<npcs.length;i++){
-
-      if(thing == npcs[i]){
-        var set = 1
-      }
-
-    }
-    if(set == 0){
-
-      location_of[thing] = agent;
-      
-    }
-  }
-
-  return {applies:applies, effects:effects, text:text};
-
-}
-*/
-
-/*
-function grasp(agent, thing) {
-
-  var applies = location_of[agent] == location_of[thing];
-
-  function effects() {
-    //checks if the thing the agent wants to grab is a 'human' object
-    var set = 0;
-    for(var i=0; i<npcs.length;i++){
-
-      if(thing == npcs[i]){
-        var set = 1
-      }
-
-    }
-    if(set == 0){
-
-      location_of[thing] = agent;
-
-    }
-  }
-  return {applies:applies, effects:effects, text:text};
-}
-*/
 
 function go(agent, place) {
 
@@ -427,6 +394,7 @@ function go(agent, place) {
                "tampering. You see a flat black hat inside the valve " +
                "housing as well, similar to a sun hat. Stitched onto " +
                "the brim is a monogram, <q>SJ</q>. You grab it. ";
+               
                knowledge.Hat = "known";
       }
     }
@@ -487,7 +455,7 @@ function go(agent, place) {
              "He is wearing a suit, despite the ashy ruin you " +
              "two stand in. Before you can say anything, he " +
              "notices you, and begins to speak rapidly. <br /><br />" +
-             "<q>Oh, hello! Pat Reddy, at your service,</q><br /><br />" +
+             "<q>Oh, hello! Pat Wesley, at your service,</q><br /><br />" +
              "he says in an irish brogue, whiskers quivering " +
              "when he smirks.<br /><br /> <q>How can I help you?</q> ";
     }
@@ -514,8 +482,8 @@ function go(agent, place) {
              "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
              "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
     }
-    else if (place == "Reddy House") {
-      text = "The Reddy house is austere and well kept. You go to knock on " +
+    else if (place == "Wesley House") {
+      text = "The Wesley house is austere and well kept. You go to knock on " +
              "the door, but at the first rap the door creaks open. " +
              "</br></br>You go inside the " + place + ".";
 
@@ -594,9 +562,9 @@ function talk(agent1, agent2) {
                "at the firefighters request.</q>";
       }
     }
-    else if (agent2 == "Pat Reddy") {
-      if (knowledge.PatReddy == "unknown") {
-        text = "You ask Pat Reddy to give you some information about the Perrys.</br></br>" +
+    else if (agent2 == "Pat Wesley") {
+      if (knowledge.PatWesley == "unknown") {
+        text = "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
                "<q>They're in mourning " +
                "for their lost property, I suspect.</q></br ></br > Before you can get " +
                "in a word, he prattles on, </br ></br ><q>Yes, I represent them and " +
@@ -605,10 +573,10 @@ function talk(agent1, agent2) {
                "estate. A kind and noble pair they are. If you seek them, " +
                "check their home on Main Street, but I warn you, they're " +
                "likely to be in a sad state indeed.</q></br ></br >" +
-               "<b>You now have access to the Perry and Reddy House</b>";
+               "<b>You now have access to the Perry and Wesley House</b>";
         locations.push("Perry House");
-        locations.push("Reddy House");
-        knowledge.PatReddy = "known";
+        locations.push("Wesley House");
+        knowledge.PatWesley = "known";
       }
     }
 
@@ -627,10 +595,10 @@ function talk(agent1, agent2) {
       }
       else if ((knowledge.MrPerry == "known") && (knowledge.Letter == "known")) {
         text = "You show him the letter.</br></br>He smiles when you show him the " +
-               "letter he sent to Pat Reddy. </br></br><q>Well, you're " +
+               "letter he sent to Pat Wesley. </br></br><q>Well, you're " +
                "quite the investigator, aren't you? Unfortunately, " +
                "that's not going to hold up in court. It's speculative, illegally " +
-               "obtained, and with Reddy on my side no court will indict me on such " +
+               "obtained, and with Wesley on my side no court will indict me on such " +
                "evidence. Besides. This is a place of constant change. Fires occur " +
                "naturally, after all - they destroy the dead wood.</q></br></br> He turns away " +
                "from you.";
