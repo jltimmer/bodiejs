@@ -63,6 +63,7 @@ var knowledge =
     Insurance: "unknown" 
   }
 
+
 var inventory = 
   {
     "Sheriff Hayes": "",
@@ -70,7 +71,6 @@ var inventory =
   }
 
 var current_choices;
-
 
 function choiceToString(c) {
   var { op, args } = c;
@@ -91,6 +91,12 @@ function choiceToString(c) {
     }
     case "wear": {
       return "Wear " + args[1];
+    }
+    case "ask": {
+      return "Ask " + args[1] + " about " + args[2];
+    }
+    case "tell": {
+      return "Tell " + args[1] + " about " + args[2];
     }
     default: return op + " " + args[args.length - 1];
   }
@@ -134,18 +140,26 @@ function displayInventory() {
 
 function displayChoices() {
   // current_choices = generate_choices();
-  toRender = "";
+  toRenderAction = "";
+  toRenderConversation = "";
   for (var i = 0; i < current_choices.length; i++) {
     var choice = current_choices[i];
     var last_character;
     if (choice.args[0] != last_character) {
-      toRender += "<br>" + "Actions for " + choice.args[0] + "<br>";
+      toRenderAction += "<br>" + "Actions for " + choice.args[0] + "<br>";
+      toRenderConversation += "<br>" + "Conversation for " + choice.args[0] + "<br>";
     }
-    toRender += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
-
+    //seperate operators for conversation and action
+    if (choice.op == "talk" || choice.op == "ask"){
+      toRenderConversation += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
+    }
+    else{
+      toRenderAction += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
+    }
     last_character = choice.args[0];
   }
-  document.getElementById("choices").innerHTML = toRender;
+  document.getElementById("actions").innerHTML = toRenderAction;
+  document.getElementById("conversation").innerHTML = toRenderConversation;
 }
 
 function render() {
@@ -184,6 +198,9 @@ function cmdToAction(cmd) {
     }
     case "wear": {
       return wear(args[0], args[1]);
+    }
+    case "ask": {
+      return ask(args[0], args[1], args[2]);
     }
     default: return undefined;
   }
@@ -250,19 +267,11 @@ function generate_choices() {
         if (give(c, c2, thing_held).applies) {
           choices.push({ op: "give", args: [c, c2, thing_held] });
         }
+        if (ask(c, c2, thing_held).applies) {
+          choices.push({ op: "ask", args: [c, c2, thing_held] });
+        }
       }
     }
-    /*
-     // wearing it
-     for (var thi in things_held) {
-         thing_held = things_held[thi];
- 
-         //if (clothing_on[c] != thing_held && c == location_of[thing_held]) {
-         if (wear(c, thing_held).applies) {
-             choices.push({ op: "wear", args: [c, thing_held] });
-         }
-     }*/
-
     // places to move
     for (var li in locations) {
       var l = locations[li];
@@ -280,6 +289,16 @@ function generate_choices() {
 
 function begin() { render(); }
 
+function ask(agent, npc, thing) {
+  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
+  var text = "";
+  function effects() {
+    var text = agent + " ask " + npc + " about the " + thing + ".</br></br>";
+    text += findQuip(npc, thing);
+    return text;
+  }
+  return { applies: applies, effects: effects, text: text };
+}
 
 
 function take(agent, thing) {
@@ -330,57 +349,6 @@ function take(agent, thing) {
 
 }
 
-/*
-function ignore(agent, thing) {
-
-  var applies = location_of[agent] == location_of[thing];
-
-  function effects() {
-    //checks if the thing the agent wants to grab is a 'human' object
-    var set = 0;
-    for(var i=0; i<npcs.length;i++){
-
-      if(thing == npcs[i]){
-        var set = 1
-      }
-
-    }
-    if(set == 0){
-
-      location_of[thing] = agent;
-      
-    }
-  }
-
-  return {applies:applies, effects:effects, text:text};
-
-}
-*/
-
-/*
-function grasp(agent, thing) {
-
-  var applies = location_of[agent] == location_of[thing];
-
-  function effects() {
-    //checks if the thing the agent wants to grab is a 'human' object
-    var set = 0;
-    for(var i=0; i<npcs.length;i++){
-
-      if(thing == npcs[i]){
-        var set = 1
-      }
-
-    }
-    if(set == 0){
-
-      location_of[thing] = agent;
-
-    }
-  }
-  return {applies:applies, effects:effects, text:text};
-}
-*/
 
 function go(agent, place) {
 
@@ -408,6 +376,7 @@ function go(agent, place) {
                "tampering. You see a flat black hat inside the valve " +
                "housing as well, similar to a sun hat. Stitched onto " +
                "the brim is a monogram, <q>SJ</q>. You grab it. ";
+               
                knowledge.Hat = "known";
       }
     }
