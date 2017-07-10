@@ -52,7 +52,7 @@ var conversation_log =
 
 var knowledge =
   {
-    WilliamHang: "unknown",  
+    ["William Hang"]: "unknown",  
     Firehouse: "unknown", 
     You: "unknown", 
     PatReddy: "unknown", 
@@ -63,11 +63,22 @@ var knowledge =
     Insurance: "unknown" 
   }
 
-var inventory = 
+var descriptions =
   {
-    "Sheriff Hayes": "",
-    "Town Hall": ""
+    "William Hang": "The town cook. He was the last person at the scene of the crime.",
+    "Firehouse": "Firehouse.",
+    "Pat Wesley": "Pat Wesley.",
+    "Letter": "Letter.",
+    "Mr. Perry": "Mr. Perry.",
+    "Shotgun Johnny": "SJ - Suspect.",
+    "Hat": "Hat.",
+    "Insurance": "Insurance."
   }
+
+var inventory =
+  [{ thing: "Town Hall", descr: "The center of the town of Bodie. The Sheriff is usually here." },
+  { thing: "Sheriff Hayes", descr: "The town's Sheriff. You met him when you first arrived. If you need a hint, see him at the Town Hall." },
+  ];
 
 var current_choices;
 
@@ -109,9 +120,8 @@ function displayState() {
 
     toRender += "</p>";
     
-    if (i == Math.floor(locations.length / 2)) {
+    if (i == Math.ceil(locations.length / 2 - 1)) {
       document.getElementById("col1").innerHTML = toRender;
-      console.log(toRender)
       toRender = "";
     }
   }
@@ -122,14 +132,23 @@ function displayState() {
 }
 
 function displayInventory() {
-  toRender = "";
+  toRender = "Information<br>";
   
-  for (var key in inventory) {
-    toRender += key + "<br>";
+  for (var i = 0; i < inventory.length; i++) {
+    toRender += "<a onclick=describeThing(" + i + ") href=javascript:void(0);>" + inventory[i].thing + "<br>";
   }
+
 
   // inventory of knowledge?
   document.getElementById("invcol1").innerHTML = toRender;
+
+  toRender = "";
+}
+
+function describeThing(t) {
+  var display_text = inventory[t].descr;
+  document.getElementById("inv_descript").innerHTML = display_text;
+  render();
 }
 
 function displayChoices() {
@@ -151,7 +170,7 @@ function displayChoices() {
 function render() {
   current_choices = generate_choices();
   displayState();
-  //displayInventory();
+  displayInventory();
   displayChoices();
 }
 
@@ -293,7 +312,7 @@ function take(agent, thing) {
     var text = agent + " take the " + thing + ".";
 
     if (thing == "Amulet") {//thing is amulet
-      knowledge.WilliamHang = "has";
+      knowledge["William Hang"] = "has";
     }
 
     if (thing == "Insurance Paper") {
