@@ -16,7 +16,7 @@ var quip = "";
      
     }
     if(npc == "JS Cain"){}
-    if(npc == "Pat Reddy"){}
+    if(npc == "Pat Wesley"){}
     if(npc == "William Hang"){}
     if(npc == "Mrs Perry"){}
     if(npc == "Mr Perry"){}
@@ -25,7 +25,7 @@ var quip = "";
   if(thing == "Letter"){
     if(npc == "Sheriff Hayes"){}
     if(npc == "JS Cain"){}
-    if(npc == "Pat Reddy"){}
+    if(npc == "Pat Wesley"){}
     if(npc == "William Hang"){}
     if(npc == "Mrs Perry"){}
     if(npc == "Mr Perry"){}
@@ -34,7 +34,7 @@ var quip = "";
   if(thing == "Insurance Paper"){
     if(npc == "Sheriff Hayes"){}
     if(npc == "JS Cain"){}
-    if(npc == "Pat Reddy"){}
+    if(npc == "Pat Wesley"){}
     if(npc == "William Hang"){}
     if(npc == "Mrs Perry"){}
     if(npc == "Mr Perry"){}
