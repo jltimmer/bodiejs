@@ -7,7 +7,7 @@ var characters =
 
 //to see if i can make js cain a character, not treated as an object
 var npcs =
-  ["Sheriff Hayes", "JS Cain", "Pat Reddy", "William Hang",
+  ["Sheriff Hayes", "JS Cain", "Pat Wesley", "William Hang",
     "Mrs Perry", "Mr Perry", "Shotgun Johnny"]
     
 // State
@@ -15,12 +15,12 @@ var location_of =
   {
     "Sheriff Hayes": "Town Hall",
     "JS Cain": "Bank",
-    "Pat Reddy": "Bakery",
+    "Pat Wesley": "Bakery",
     "You": "Town Hall",
     "Amulet": "Chinatown",
     "William Hang": "Jail",
     "Insurance Paper": "Bank",
-    "Letter": "Reddy House",
+    "Letter": "Wesley House",
     "Mrs Perry": "Perry House",
     "Shotgun Johnny": "Graveyard",
     "Mr Perry": "Graveyard",
@@ -31,7 +31,7 @@ var clothing_on = //for wear function
   {
     "Sheriff Hayes": "",
     "JS Cain": "",
-    "Pat Reddy": "",
+    "Pat Wesley": "",
     "You": ""
   }
 
@@ -55,7 +55,7 @@ var knowledge =
     WilliamHang: "unknown",  
     Firehouse: "unknown", 
     You: "unknown", 
-    PatReddy: "unknown", 
+    PatWesley: "unknown", 
     Letter: "unknown", 
     MrPerry: "unknown", 
     ShotgunJohnny: "unknown", 
@@ -437,7 +437,7 @@ function go(agent, place) {
              "He is wearing a suit, despite the ashy ruin you " +
              "two stand in. Before you can say anything, he " +
              "notices you, and begins to speak rapidly. <br /><br />" +
-             "<q>Oh, hello! Pat Reddy, at your service,</q><br /><br />" +
+             "<q>Oh, hello! Pat Wesley, at your service,</q><br /><br />" +
              "he says in an irish brogue, whiskers quivering " +
              "when he smirks.<br /><br /> <q>How can I help you?</q> ";
     }
@@ -464,8 +464,8 @@ function go(agent, place) {
              "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
              "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
     }
-    else if (place == "Reddy House") {
-      text = "The Reddy house is austere and well kept. You go to knock on " +
+    else if (place == "Wesley House") {
+      text = "The Wesley house is austere and well kept. You go to knock on " +
              "the door, but at the first rap the door creaks open. " +
              "</br></br>You go inside the " + place + ".";
 
@@ -544,9 +544,9 @@ function talk(agent1, agent2) {
                "at the firefighters request.</q>";
       }
     }
-    else if (agent2 == "Pat Reddy") {
-      if (knowledge.PatReddy == "unknown") {
-        text = "You ask Pat Reddy to give you some information about the Perrys.</br></br>" +
+    else if (agent2 == "Pat Wesley") {
+      if (knowledge.PatWesley == "unknown") {
+        text = "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
                "<q>They're in mourning " +
                "for their lost property, I suspect.</q></br ></br > Before you can get " +
                "in a word, he prattles on, </br ></br ><q>Yes, I represent them and " +
@@ -555,10 +555,10 @@ function talk(agent1, agent2) {
                "estate. A kind and noble pair they are. If you seek them, " +
                "check their home on Main Street, but I warn you, they're " +
                "likely to be in a sad state indeed.</q></br ></br >" +
-               "<b>You now have access to the Perry and Reddy House</b>";
+               "<b>You now have access to the Perry and Wesley House</b>";
         locations.push("Perry House");
-        locations.push("Reddy House");
-        knowledge.PatReddy = "known";
+        locations.push("Wesley House");
+        knowledge.PatWesley = "known";
       }
     }
 
@@ -577,10 +577,10 @@ function talk(agent1, agent2) {
       }
       else if ((knowledge.MrPerry == "known") && (knowledge.Letter == "known")) {
         text = "You show him the letter.</br></br>He smiles when you show him the " +
-               "letter he sent to Pat Reddy. </br></br><q>Well, you're " +
+               "letter he sent to Pat Wesley. </br></br><q>Well, you're " +
                "quite the investigator, aren't you? Unfortunately, " +
                "that's not going to hold up in court. It's speculative, illegally " +
-               "obtained, and with Reddy on my side no court will indict me on such " +
+               "obtained, and with Wesley on my side no court will indict me on such " +
                "evidence. Besides. This is a place of constant change. Fires occur " +
                "naturally, after all - they destroy the dead wood.</q></br></br> He turns away " +
                "from you.";
