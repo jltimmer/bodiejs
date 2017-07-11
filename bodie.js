@@ -189,7 +189,7 @@ function displayChoices() {
       toRenderConversation += "<br>" + "Conversation for " + choice.args[0] + "<br>";
     }
     //seperate operators for conversation and action
-    if (choice.op == "talk" || choice.op == "ask"){
+    if (choice.op == "talk" || choice.op == "ask" || choice.op == "tell"){
       toRenderConversation += "<a onclick=selectChoice(" + i + ") href=javascript:void(0);>" + choiceToString(choice) + "</a><br>";
     }
     else{
@@ -240,6 +240,9 @@ function cmdToAction(cmd) {
     }
     case "ask": {
       return ask(args[0], args[1], args[2]);
+    }
+    case "tell": {
+      return tell(args[0], args[1], args[2]);
     }
     default: return undefined;
   }
@@ -309,6 +312,10 @@ function generate_choices() {
         if (ask(c, c2, thing_held).applies) {
           choices.push({ op: "ask", args: [c, c2, thing_held] });
         }
+        if (tell(c, c2, thing_held).applies) {
+          choices.push({ op: "tell", args: [c, c2, thing_held] });
+        }
+
       }
     }
     // places to move
@@ -334,6 +341,16 @@ function ask(agent, npc, thing) {
   function effects() {
     var text = agent + " ask " + npc + " about the " + thing + ".</br></br>";
     text += findQuip(npc, thing);
+    return text;
+  }
+  return { applies: applies, effects: effects, text: text };
+}
+
+function tell(agent, npc, thing) {
+  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
+  var text = "";
+  function effects() {
+    var text = agent + " tell " + npc + " about the " + thing + ".</br></br>";
     return text;
   }
   return { applies: applies, effects: effects, text: text };
