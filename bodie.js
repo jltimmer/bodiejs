@@ -8,7 +8,7 @@ var characters =
 //to see if i can make js cain a character, not treated as an object
 var npcs =
   ["Sheriff Hayes", "JS Cain", "Pat Wesley", "William Hang",
-    "Mrs Perry", "Mr Perry", "Shotgun Johnny"]
+    "Mrs. Perry", "Mr. Perry", "Shotgun Johnny"]
     
 // State
 var location_of =
@@ -21,9 +21,9 @@ var location_of =
     "William Hang": "Jail",
     "Insurance Paper": "Bank",
     "Letter": "Wesley House",
-    "Mrs Perry": "Perry House",
+    "Mrs. Perry": "Perry House",
     "Shotgun Johnny": "Graveyard",
-    "Mr Perry": "Graveyard",
+    "Mr. Perry": "Graveyard",
     "Key": "Sheriff Hayes"
   }
 
@@ -53,14 +53,14 @@ var conversation_log =
 var knowledge =
   {
     ["William Hang"]: "unknown",  
-    Firehouse: "unknown", 
-    You: "unknown", 
-    PatWesley: "unknown", 
-    Letter: "unknown", 
-    MrPerry: "unknown", 
-    ShotgunJohnny: "unknown", 
-    Hat: "unknown", 
-    Insurance: "unknown" 
+    ["Firehouse"]: "unknown", 
+    ["You"]: "unknown", 
+    ["Pat Wesley"]: "unknown", 
+    ["Letter"]: "unknown", 
+    ["Mr. Perry"]: "unknown", 
+    ["Shotgun Johnny"]: "unknown", 
+    ["Hat"]: "unknown", 
+    ["Insurance"]: "unknown" 
   }
 
 var descriptions =
@@ -74,6 +74,17 @@ var descriptions =
     "Hat": "Hat.",
     "Insurance": "Insurance."
   }
+
+/*var descriptions =
+  [{ thing: "William Hang", descr: "The town cook. He was the last person at the scene of the crime." },
+  { thing: "Firehouse", descr: "Firehouse." },
+  { thing: "Pat Wesley", descr: "Pat Wesley." },
+  { thing: "Letter", descr: "Letter." },
+  { thing: "Mr. Perry", descr: "Mr. Perry." },
+  { thing: "Shotgun Johnny", descr: "SJ - Suspect." },
+  { thing: "Hat", descr: "Hat." },
+  { thing: "Insurance", descr: "Insurance." }
+  ];*/
 
 var inventory =
   [{ thing: "Town Hall", descr: "The center of the town of Bodie. The Sheriff is usually here." },
@@ -145,14 +156,24 @@ function displayInventory() {
 
 
   // inventory of knowledge?
-  document.getElementById("invcol1").innerHTML = toRender;
+  document.getElementById("information").innerHTML = toRender;
 
-  toRender = "";
+  for (var key in descriptions) {
+    if (knowledge[key] != "unknown") {
+      inventory.push({ thing: key, descr: descriptions[key] });
+      delete descriptions[key];
+    }
+  }
+  /*for (var i = 0; i < descriptions.length; i++) {
+    if (knowledge[descriptions[i].thing] != "unknown") {
+      inventory.push({thing: descriptions[i].thing, descr: descriptions[i].descr)
+    }
+  }*/
 }
 
 function describeThing(t) {
   var display_text = inventory[t].descr;
-  document.getElementById("inv_descript").innerHTML = display_text;
+  document.getElementById("description").innerHTML = display_text;
   render();
 }
 
@@ -344,7 +365,7 @@ function take(agent, thing) {
              "that a good number of the lost buildings were in direct " +
              "competition with Perry... Something seems off. I suggest " +
              "you look around her bakery.</q>";
-             knowledge.Insurance = "known";
+             knowledge["Insurance"] = "known";
     }
     else if (thing == "Letter") {
       text = "You unfold the letter, and see a sketch of " +
@@ -357,7 +378,7 @@ function take(agent, thing) {
              "hotel in the county, but a roaring center of trade. Now, if only " +
              "that old man would sell us the rights to his land, we could move " +
              "forward with the plan...</br>Earnestly,</br>James</q>";
-             knowledge.Letter = "known";
+             knowledge["Letter"] = "known";
     }
 
     return text;
@@ -379,13 +400,13 @@ function go(agent, place) {
 
     //incorporating specific story line
     if (place == "Firehouse") {
-      if (knowledge.You == "unknown") {
+      if (knowledge["You"] == "unknown") {
         text = "The firehouse is empty today, the sun " +
                "gleaming off of its bell. Of interest " +
                "is a ditch containing what seems to be " +
                "the housing for a water valve. You try " +
                "to look inside, but you're stopped by a heavy lock.";
-               knowledge.Firehouse = "known";
+               knowledge["Firehouse"] = "known";
       }
       else {
         text = "You use the key the sheriff gave you to open up " +
@@ -395,7 +416,7 @@ function go(agent, place) {
                "housing as well, similar to a sun hat. Stitched onto " +
                "the brim is a monogram, <q>SJ</q>. You grab it. ";
                
-               knowledge.Hat = "known";
+               knowledge["Hat"] = "known";
       }
     }
     else if (place == "JS Cain's House") {
@@ -406,11 +427,11 @@ function go(agent, place) {
 
     }
     else if (place == "Jail") {
-      if (knowledge.WilliamHang == "unknown") {//amulet is not in possesion of you
+      if (knowledge["William Hang"] == "unknown") {//amulet is not in possesion of you
         text = "The man in the jail cell looks almost asleep. " +
                "</br ></br >Check somewhere else. ";
       }
-      else if (knowledge.WilliamHang == "has") {
+      else if (knowledge["William Hang"] == "has") {
         text = "Hang looks awake, so you ask about " +
                "the events of the night, but he refuses to talk about that. <q>All I " +
                "want is to find my family,</q> is all you  " +
@@ -422,7 +443,7 @@ function go(agent, place) {
                "that survived the fire? I never suspected - thank you. " +
                "Please, can I have it?</q> ";
       }
-      else if (knowledge.WilliamHang == "given") {
+      else if (knowledge["William Hang"] == "given") {
         text = "You've already spoken to the cook. He is turned " +
                "away, in the corner of the cell.";
       }
@@ -535,26 +556,26 @@ function talk(agent1, agent2) {
     var text = agent2 + " says hello to " + agent1 + "</br ></br >";
 
     if (agent2 == "Sheriff Hayes") {
-      if ((knowledge.WilliamHang == "given") && (knowledge.Firehouse == "known")) {
-        if (knowledge.You == "unknown") {
+      if ((knowledge["William Hang"] == "given") && (knowledge["Firehouse"] == "known")) {
+        if (knowledge["You"] == "unknown") {
           text += "</br > You tell the sheriff what Hang told you about " +
                   "the firehouse, and he grimaces.</br ></br >" +
                   "Sheriff Hayes says, <q>I wish he had just told us his story. " +
                   "I can't release him yet, but you should hunt down that lead. " +
                   "Here's the key.</q></br ></br >You pocket it.";
-                  knowledge.You = "known";
+                  knowledge["You"] = "known";
         }
-        else if (knowledge.You == "known") {
+        else if (knowledge["You"] == "known") {
           text = "Congratulations you have enough evidence to accuse William Hang of arson.</br></br>";
-          if(knowledge.Hat == "known"){
+          if(knowledge["Hat"] == "known"){
             text += "Congratulations you have enough evidence to accuse Shotgun Johnny of arson.</br></br>";
           }
-          if((knowledge.Letter == "known") && (knowledge.Insurance == "known")){
+          if((knowledge["Letter"] == "known") && (knowledge["Insurance"] == "known")){
             text += "Congratulations you have enough evidence to accuse Shotgun Johnny and the Perrys of arson.</br></br>"
           }
         }
       }
-      else if (knowledge.Firehouse == "known") {
+      else if (knowledge["Firehouse"] == "known") {
         text = "You ask the Sheriff to unlock the firehouse.</br></br > " +
                "The Sheriff responds, <q>" +
                "Sorry kid, the firehouse is gonna stay locked up " +
@@ -563,7 +584,7 @@ function talk(agent1, agent2) {
       }
     }
     else if (agent2 == "Pat Wesley") {
-      if (knowledge.PatWesley == "unknown") {
+      if (knowledge["PatWesley"] == "unknown") {
         text = "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
                "<q>They're in mourning " +
                "for their lost property, I suspect.</q></br ></br > Before you can get " +
@@ -576,12 +597,12 @@ function talk(agent1, agent2) {
                "<b>You now have access to the Perry and Wesley House</b>";
         locations.push("Perry House");
         locations.push("Wesley House");
-        knowledge.PatWesley = "known";
+        knowledge["PatWesley"] = "known";
       }
     }
 
-    else if (agent2 == "Mr Perry") {
-      if (knowledge.MrPerry == "unknown") {
+    else if (agent2 == "Mr. Perry") {
+      if (knowledge["Mr. Perry"] == "unknown") {
         text = "The man with the eyepatch stands straight and tall over " +
                "a squared off patch of land. He seems to be about sixty, " +
                "with a strong physique and confident demeanor. He stares " +
@@ -591,9 +612,9 @@ function talk(agent1, agent2) {
                "to do it. I've decided to take the task into my own hands.</q> " +
                "</br></br><q>My name is James Perry. Mono County Supervisor. And you're " +
                "the deputy who's been looking into the fire.</q>";
-        knowledge.MrPerry = "known";
+        knowledge["Mr. Perry"] = "known";
       }
-      else if ((knowledge.MrPerry == "known") && (knowledge.Letter == "known")) {
+      else if ((knowledge["Mr. Perry"] == "known") && (knowledge["Letter"] == "known")) {
         text = "You show him the letter.</br></br>He smiles when you show him the " +
                "letter he sent to Pat Wesley. </br></br><q>Well, you're " +
                "quite the investigator, aren't you? Unfortunately, " +
@@ -605,7 +626,7 @@ function talk(agent1, agent2) {
       }
     }
     else if (agent2 == "Shotgun Johnny") {
-      if (knowledge.ShotgunJohnny == "unknown") {
+      if (knowledge["Shotgun Johnny"] == "unknown") {
         text = "The short man strikes a comical figure, with a bulldog face " +
                "and a round black hat, similar to a sun hat.</br>You begin to " +
                "walk towards the man, but as you do, he saunters towards you " +
@@ -618,9 +639,9 @@ function talk(agent1, agent2) {
                "in his eyes.</br></br>A tense moment passes, and he suddenly breaks out " +
                "in laughter.</br></br><q>Nah, I'm playin' with ya. What is it you want to say?</q>" +
                "There's still a bit of edge in his voice.";
-               knowledge.ShotgunJohnny = "known";
+               knowledge["Shotgun Johnny"] = "known";
       }
-      else if ((knowledge.Hat == "known") && (knowledge.ShotgunJohnny == "known")) {
+      else if ((knowledge["Hat"] == "known") && (knowledge["Shotgun Johnny"] == "known")) {
         text = "You show him the hat you found in the firehouse.</br></br><q>Yeah, " +
                "that's me hat...</q></br></br>Johnny blinks.</br></br><q>Where'd you find " +
                "that? I have another but that's my favorite. I got a prop " +
@@ -632,7 +653,7 @@ function talk(agent1, agent2) {
                "the evidence.";
       }
     }
-    else if ((agent2 == "Mrs Perry") && (knowledge.Insurance == "known")) {
+    else if ((agent2 == "Mrs. Perry") && (knowledge["Insurance"] == "known")) {
       text = "You pull out the document that Cain gave you and hand it to her. " +
              "Mrs. Perry is unimpressed.</br></br><q>Well? Why show me what I already " +
              "know? JS Cain likely told you I was up to no good, eh? He's " +
@@ -664,7 +685,7 @@ function give(agent1, agent2, thing) {
     else {
       location_of[thing] = agent2
       locations.push("Graveyard");
-      knowledge.WilliamHang = "given";
+      knowledge["William Hang"] = "given";
       if (clothing_on[agent1] == thing) {
         clothing_on[agent1] = "";
       }
