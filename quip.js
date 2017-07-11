@@ -2,8 +2,8 @@ var amuletSheriffHayes = ["This ole amulet looks like it belongs to someone.",
       "You should find the owner of this amulet.",
       "Good find, I'm sure the owner of this amulet is out there somewhere."];
 
-var amuletJSCain = ["Never seen this before.","Wish I would have found this amulet."]
-
+var amuletJSCain = ["Never seen this before.","Wish I would have found this amulet."];
+/////////////////////////////////////////////////////////////////////////////////////
 function findQuip(npc,thing){
 
 var quip = "";

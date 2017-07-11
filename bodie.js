@@ -423,11 +423,11 @@ function go(agent, place) {
 
     }
     else if (place == "Jail") {
-      if (knowledge.WilliamHang == "unknown") {//amulet is not in possesion of you
+      if (knowledge["William Hang"] == "unknown") {//amulet is not in possesion of you
         text = "The man in the jail cell looks almost asleep. " +
                "</br ></br >Check somewhere else. ";
       }
-      else if (knowledge.WilliamHang == "has") {
+      else if (knowledge["William Hang"] == "has") {
         text = "Hang looks awake, so you ask about " +
                "the events of the night, but he refuses to talk about that. <q>All I " +
                "want is to find my family,</q> is all you  " +
@@ -439,7 +439,7 @@ function go(agent, place) {
                "that survived the fire? I never suspected - thank you. " +
                "Please, can I have it?</q> ";
       }
-      else if (knowledge.WilliamHang == "given") {
+      else if (knowledge["William Hang"] == "given") {
         text = "You've already spoken to the cook. He is turned " +
                "away, in the corner of the cell.";
       }
@@ -552,7 +552,7 @@ function talk(agent1, agent2) {
     var text = agent2 + " says hello to " + agent1 + "</br ></br >";
 
     if (agent2 == "Sheriff Hayes") {
-      if ((knowledge.WilliamHang == "given") && (knowledge.Firehouse == "known")) {
+      if ((knowledge["William Hang"] == "given") && (knowledge.Firehouse == "known")) {
         if (knowledge.You == "unknown") {
           text += "</br > You tell the sheriff what Hang told you about " +
                   "the firehouse, and he grimaces.</br ></br >" +
@@ -681,7 +681,7 @@ function give(agent1, agent2, thing) {
     else {
       location_of[thing] = agent2
       locations.push("Graveyard");
-      knowledge.WilliamHang = "given";
+      knowledge["William Hang"] = "given";
       if (clothing_on[agent1] == thing) {
         clothing_on[agent1] = "";
       }
