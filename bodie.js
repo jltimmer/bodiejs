@@ -60,10 +60,11 @@ var knowledge =
     ["Mr. Perry"]: "unknown", 
     ["Shotgun Johnny"]: "unknown", 
     ["Hat"]: "unknown", 
-    ["Insurance"]: "unknown" 
+    ["Insurance"]: "unknown",
+    ["Amulet"]: "unknown"
   }
 
-var descriptions =
+/*var descriptions =
   {
     "William Hang": "The town cook. He was the last person at the scene of the crime.",
     "Firehouse": "Firehouse.",
@@ -73,18 +74,19 @@ var descriptions =
     "Shotgun Johnny": "SJ - Suspect.",
     "Hat": "Hat.",
     "Insurance": "Insurance."
-  }
+  }*/
 
-/*var descriptions =
+var descriptions =
   [{ thing: "William Hang", descr: "The town cook. He was the last person at the scene of the crime." },
-  { thing: "Firehouse", descr: "Firehouse." },
-  { thing: "Pat Wesley", descr: "Pat Wesley." },
-  { thing: "Letter", descr: "Letter." },
-  { thing: "Mr. Perry", descr: "Mr. Perry." },
-  { thing: "Shotgun Johnny", descr: "SJ - Suspect." },
-  { thing: "Hat", descr: "Hat." },
-  { thing: "Insurance", descr: "Insurance." }
-  ];*/
+  { thing: "Firehouse", descr: "The town's firehouse. A nearby ditch houses a water valve." },
+  { thing: "Pat Wesley", descr: "An attorney in Bodie. He represents the Perry's and their businessses." },
+  { thing: "Letter", descr: "A letter from Mr. Perry to his attorney detailing a potential new business venture." },
+  { thing: "Mr. Perry", descr: "A tall confident, man with an eyepatch on one eye. Mono County Supervisor." },
+  { thing: "Shotgun Johnny", descr: "A short man with a thick cornish accent. He seems to favor round black hats." },
+  { thing: "Hat", descr: "A hat found near the tampered-with water valve. The initials SJ are stitched inside." },
+  { thing: "Insurance", descr: "The insurance document showing a list of losses from the fire." },
+  { thing: "Amulet", descr: "A wooden amulet on a twine string. A faded sketch of a girl is inside."}
+  ];
 
 var inventory =
   [{ thing: "Town Hall", descr: "The center of the town of Bodie. The Sheriff is usually here." },
@@ -158,17 +160,18 @@ function displayInventory() {
   // inventory of knowledge?
   document.getElementById("information").innerHTML = toRender;
 
-  for (var key in descriptions) {
+  /*for (var key in descriptions) {
     if (knowledge[key] != "unknown") {
       inventory.push({ thing: key, descr: descriptions[key] });
       delete descriptions[key];
     }
-  }
-  /*for (var i = 0; i < descriptions.length; i++) {
-    if (knowledge[descriptions[i].thing] != "unknown") {
-      inventory.push({thing: descriptions[i].thing, descr: descriptions[i].descr)
-    }
   }*/
+  for (var i = 0; i < descriptions.length; i++) {
+    if (knowledge[descriptions[i].thing] != "unknown") {
+      inventory.push(descriptions[i]);
+      descriptions.splice(i, 1);
+    }
+  }
 }
 
 function describeThing(t) {
@@ -369,6 +372,7 @@ function take(agent, thing) {
 
     if (thing == "Amulet") {//thing is amulet
       knowledge["William Hang"] = "has";
+      knowledge["Amulet"] = "has";
     }
 
     if (thing == "Insurance Paper") {
@@ -601,7 +605,7 @@ function talk(agent1, agent2) {
       }
     }
     else if (agent2 == "Pat Wesley") {
-      if (knowledge["PatWesley"] == "unknown") {
+      if (knowledge["Pat Wesley"] == "unknown") {
         text = "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
                "<q>They're in mourning " +
                "for their lost property, I suspect.</q></br ></br > Before you can get " +
@@ -614,7 +618,7 @@ function talk(agent1, agent2) {
                "<b>You now have access to the Perry and Wesley House</b>";
         locations.push("Perry House");
         locations.push("Wesley House");
-        knowledge["PatWesley"] = "known";
+        knowledge["Pat Wesley"] = "known";
       }
     }
 
