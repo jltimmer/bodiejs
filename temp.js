@@ -469,11 +469,36 @@ function tell(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
   function effects() {
-    
+
+    if(find_quips(agent, thing)!= undefined){
+      quips = find_quips(agent, thing);
+      if ( quips.length ) {
+        for(var i = 0; i < quips[0].people_told[i]; i++){
+          if (quips[0].people_told[i] == npc){
+            return undefined;
+          }
+        }
+        quips[0].people_told.push(npc);
+
+
+      }
+      else {
+        text += "I don't know what to tell you";
 
 
 
-    return text;
+
+      }
+    }
+    /*
+    agent can tell npc thing(quip) 
+      iif the thing(quip).people_told != npc
+    effects
+      agents -> topic -> quip.people_told.push(npc)
+      npcs -> topic.push {content = quip.content, id = quip.id, people_told = [agent]}
+    */
+
+  return text;
   }
   return { applies: applies, effects: effects, text: text };
 }
