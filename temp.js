@@ -85,24 +85,20 @@ var hang_knowledge =
     [
       { 
       content: "On my way to the bar I passed the firehouse, and heard " +
-                "a voice muttering to itself, 'the prop's to break the line'. " +
-                "I think I know who it was, but he's a dangerous man. I think he " +
-                "saw me that night and I'm sure he'll come for revenge if he knows I sent you. Good luck, friend.",
+               "a voice muttering to itself, 'the prop's to break the line'. " +
+               "I think I know who it was, but he's a dangerous man. I think he " +
+               "saw me that night and I'm sure he'll come for revenge if he knows I sent you. Good luck, friend.",
       id: "firehouse_tampering",
       people_told: []
       }
     ]
   },
   {
-    topic: "amulet",
+    topic: "Amulet",
     quips :
     [
       {
-        content: "On my way to the bar I passed the firehouse," +
-                " and heard a voice muttering to itself, 'the prop's" +
-                " to break the line'. I think I know who it was, but he's" + 
-                "a dangerous man. I think he saw me that night and I'm sure he'll" + 
-                "come for revenge if he knows I sent you. Good luck, friend.",
+        content: "I lost an amulet last night.",
         id: "amulet_hangs",
         people_told: []
       }
@@ -111,8 +107,6 @@ var hang_knowledge =
   },
   {topic: "sheriff", quips: []}
 ]
-//console.log(hang_knowledge[0].quips[0].content);
-
 var you_knowledge = 
 [
   {topics:  "",
@@ -130,10 +124,16 @@ var character_knowledge =
 [
   {character: "You", knowledge: you_knowledge},
   {character: "William Hang", knowledge: hang_knowledge}
+ // {character: "JS Cain", knowledge: cain_knowledge}
+ // {character: "Pat Wesley", knowledge: wesley_knowledge}
+ // {character: "Sheriff Hayes", knowledge: hayes_knowledge}
+ // {character: "Mr Perry", knowledge: mr_perry_knowledge}
+ // {character: "Mrs Perry", knowledge: mrs_perry_knowledge}
+ // {character: "Shotgun Johnny", knowledge: sj_knowledge}
 ]
 
 // lookup_knowledge(c) should return knowledge object k for {character: c, knowledge: k }
-function lookup_knowledge(c) {
+/*function lookup_knowledge(c) {
   for(var i = 0; i < character_knowledge.length; i++) {
     if(character_knowledge[i].character == c) {
       return character_knowledge[i].knowledge;
@@ -158,13 +158,27 @@ function lookup_topic_quips(t) {
   }
   console.log("Couldn't find quip for topic " + t);
   return undefined;
-}
+}*/
 // lookup_topic(t) should return quip object q for {topic: t, quips: q}
 
-
-
-
-
+function find_quips(c, t) {
+  for(var i = 0; i < character_knowledge.length; i++) {
+    if(character_knowledge[i].character == c) { //now we are at characters knowledge
+      var charknowledge = character_knowledge[i].knowledge;
+      //console.log(charknowledge);
+      for(var j = 0; j < charknowledge.length; j++) {
+        //console.log(charknowledge[j]);
+        if (charknowledge[j].topic == t) {
+          //console.log(charknowledge[j].quips[0].id);
+          return charknowledge[j].quips;
+        }
+      }
+      console.log("Couldn't find quips for topic " + t);
+    }
+  }
+  console.log("Couldn't find knowledge for character " + c);
+  return undefined;
+}
 
 
 /*var descriptions =
@@ -431,48 +445,34 @@ function ask(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
 
-
   function effects() {
-   var npcs_knowledge = lookup_knowledge(npc);
-   var quips = [];
-   for(var i = 0; i < npcs_knowledge.length; i++) {
-     if (npcs_knowledge[i].topic == thing){
-      quips += lookup_topic_quips(npcs_knowledge[i].topic);
-     }
-
-   }
-    for(var i = 0; i < quips.length; i++){
-    
-      if (quips[i].content == []) {
-        text += "I don't know what you are talking about";
-        return text;
+    if(find_quips(npc, thing)!= undefined){
+      quips = find_quips(npc, thing);
+      if ( !quips.length ){
+        text += "I don't know anything about that";
       }
       else {
-        text += quips[i].content;
-        quips.people_told.push(agent);
-        return text;
-      } 
+        text += quips[0].content;
+        quips[0].people_told.push(agent);
+      }
+     return text;
     }
-
+    else 
+      return undefined;
   }
+
     return { applies: applies, effects: effects, text: text };
 }
-/*function ask(agent, npc, thing) {
-  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
-  var text = "";
-  function effects() {
-    var text = agent + " ask " + npc + " about the " + thing + ".</br></br>";
-    text += findQuip(npc, thing);
-    return text;
-  }
-  return { applies: applies, effects: effects, text: text };
-}*/
+
 
 function tell(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
   function effects() {
-    var text = agent + " tell " + npc + " about the " + thing + ".</br></br>";
+    
+
+
+
     return text;
   }
   return { applies: applies, effects: effects, text: text };
