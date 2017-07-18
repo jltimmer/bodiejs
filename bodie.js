@@ -186,6 +186,28 @@ var inventory =
   { thing: "Sheriff Hayes", descr: "The town's Sheriff. You met him when you first arrived. If you need a hint, see him at the Town Hall." },
   ];
 
+var npc_plans =
+  {
+    "JS Cain":
+    [{ op: "go", args: ["JS Cain", "Town Hall"] },
+    { op: "talk", args: ["JS Cain", "Sheriff"] },
+    { op: "go", args: ["JS Cain", "Bank"] },
+    { op: "take", args: ["JS Cain", "Insurance Paper"] }
+    //read/examine paper
+    ],
+    "Shotgun Johnny":
+    [{ op: "go", args: ["Shotgun Johnny", "Firehouse"] },
+    //examine water valve housing
+    { op: "go", args: ["Shotgun Johnny", "Town Hall"] },
+    { op: "talk", args: ["Shotgun Johnny", "Sheriff"] },
+    { op: "take", args: ["Shotgun Johnny", "Key"] },
+    { op: "go", args: ["Shotgun Johnny", "Firehouse"] },
+    //open housing
+    { op: "take", args: ["Shotgun Johnny", "Hat"] },
+    { op: "go", args: ["Shotgun Johnny", "Graveyard"] }
+    ]
+  };
+
 var current_choices;
 
 function choiceToString(c) {
@@ -219,6 +241,7 @@ function choiceToString(c) {
 }
 
 function displayState() {
+  //applyOper(npc_plans["JS Cain"][0]);
   toRender = "";
   state = [];
   // stuff at all locations
