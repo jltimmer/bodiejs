@@ -48,33 +48,126 @@ var conversation_log =
     "Town Hall": [],
     "Sheriff Hayes": [],
     "William Hang": [],
+
   }
 
 var knowledge =
   {
     ["William Hang"]: "unknown",  
     ["Firehouse"]: "unknown", 
-    ["You"]: "unknown", 
+    ["You"]: "unknown", // should be for key, can model using location_of
     ["Pat Wesley"]: "unknown", 
-    ["Letter"]: "unknown", 
+    ["Letter"]: "unknown", //can model using location_of
     ["Mr. Perry"]: "unknown", 
     ["Shotgun Johnny"]: "unknown", 
-    ["Hat"]: "unknown", 
-    ["Insurance"]: "unknown",
-    ["Amulet"]: "unknown"
+    ["Hat"]: "unknown", //can model using location_of
+    ["Insurance"]: "unknown" //can model using location_of
   }
 
-/*var descriptions =
+
+var hang_knowledge =  
+[
   {
-    "William Hang": "The town cook. He was the last person at the scene of the crime.",
-    "Firehouse": "Firehouse.",
-    "Pat Wesley": "Pat Wesley.",
-    "Letter": "Letter.",
-    "Mr. Perry": "Mr. Perry.",
-    "Shotgun Johnny": "SJ - Suspect.",
-    "Hat": "Hat.",
-    "Insurance": "Insurance."
-  }*/
+    topic: "firehouse",
+    quips: 
+    [
+      { 
+      content: "On my way to the bar I passed the firehouse, and heard " +
+               "a voice muttering to itself, 'the prop's to break the line'. " +
+               "I think I know who it was, but he's a dangerous man. I think he " +
+               "saw me that night and I'm sure he'll come for revenge if he knows I sent you. Good luck, friend.",
+      id: "firehouse_tampering",
+      people_told: []
+      }
+    ]
+  },
+  {
+    topic: "Amulet",
+    quips :
+    [
+      {
+        content: "I lost an amulet last night.",
+        id: "amulet_hangs",
+        people_told: []
+      }
+    ]
+
+  },
+  {topic: "sheriff", quips: []}
+]
+var you_knowledge = 
+[
+  {topics:  "",
+   quips :
+   [
+    {content: "",
+     id: "",
+     people_told: []
+    }
+   ]
+  }
+]
+
+var character_knowledge = 
+[
+  {character: "You", knowledge: you_knowledge},
+  {character: "William Hang", knowledge: hang_knowledge}
+ // {character: "JS Cain", knowledge: cain_knowledge}
+ // {character: "Pat Wesley", knowledge: wesley_knowledge}
+ // {character: "Sheriff Hayes", knowledge: hayes_knowledge}
+ // {character: "Mr Perry", knowledge: mr_perry_knowledge}
+ // {character: "Mrs Perry", knowledge: mrs_perry_knowledge}
+ // {character: "Shotgun Johnny", knowledge: sj_knowledge}
+]
+
+// lookup_knowledge(c) should return knowledge object k for {character: c, knowledge: k }
+/*function lookup_knowledge(c) {
+  for(var i = 0; i < character_knowledge.length; i++) {
+    if(character_knowledge[i].character == c) {
+      return character_knowledge[i].knowledge;
+    }
+  }
+  console.log("Couldn't find knowledge for character " + c);
+  return undefined;
+}
+
+var topic_quip =
+[
+  {topic: "firehouse" , quips: null },
+  {topic: "amulet" , quips: null}
+]
+
+// lookup topic quips
+function lookup_topic_quips(t) {
+  for(var i = 0; i < topic_quip.length; i++) {
+    if(topic_quip[i].topic == t) {
+      return topic_quip[i].quips;
+    }
+  }
+  console.log("Couldn't find quip for topic " + t);
+  return undefined;
+}*/
+// lookup_topic(t) should return quip object q for {topic: t, quips: q}
+
+function find_quips(c, t) {
+  for(var i = 0; i < character_knowledge.length; i++) {
+    if(character_knowledge[i].character == c) { //now we are at characters knowledge
+      var charknowledge = character_knowledge[i].knowledge;
+      //console.log(charknowledge);
+      for(var j = 0; j < charknowledge.length; j++) {
+        //console.log(charknowledge[j]);
+        if (charknowledge[j].topic == t) {
+          //console.log(charknowledge[j].quips[0].id);
+          return charknowledge[j].quips;
+        }
+      }
+      console.log("Couldn't find quips for topic " + t);
+    }
+  }
+  console.log("Couldn't find knowledge for character " + c);
+  return undefined;
+}
+
 
 var descriptions =
   [{ thing: "William Hang", descr: "The town cook. He was the last person at the scene of the crime." },
@@ -85,7 +178,7 @@ var descriptions =
   { thing: "Shotgun Johnny", descr: "A short man with a thick cornish accent. He seems to favor round black hats." },
   { thing: "Hat", descr: "A hat found near the tampered-with water valve. The initials SJ are stitched inside." },
   { thing: "Insurance", descr: "The insurance document showing a list of losses from the fire." },
-  { thing: "Amulet", descr: "A wooden amulet on a twine string. A faded sketch of a girl is inside."}
+  { thing: "Amulet", descr: "A wooden amulet on a twine string. A faded sketch of a girl is inside." }
   ];
 
 var inventory =
@@ -341,20 +434,61 @@ function begin() { render(); }
 function ask(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
+
   function effects() {
-    var text = agent + " ask " + npc + " about the " + thing + ".</br></br>";
-    text += findQuip(npc, thing);
-    return text;
+    if(find_quips(npc, thing)!= undefined){
+      quips = find_quips(npc, thing);
+      if ( !quips.length ){
+        text += "I don't know anything about that";
+      }
+      else {
+        text += quips[0].content;
+        quips[0].people_told.push(agent);
+      }
+     return text;
+    }
+    else 
+      return undefined;
   }
-  return { applies: applies, effects: effects, text: text };
+
+    return { applies: applies, effects: effects, text: text };
 }
+
 
 function tell(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
   function effects() {
-    var text = agent + " tell " + npc + " about the " + thing + ".</br></br>";
-    return text;
+
+    if(find_quips(agent, thing)!= undefined){
+      quips = find_quips(agent, thing);
+      if ( quips.length ) {
+        for(var i = 0; i < quips[0].people_told[i]; i++){
+          if (quips[0].people_told[i] == npc){
+            return undefined;
+          }
+        }
+        quips[0].people_told.push(npc);
+
+
+      }
+      else {
+        text += "I don't know what to tell you";
+
+
+
+
+      }
+    }
+    /*
+    agent can tell npc thing(quip) 
+      iif the thing(quip).people_told != npc
+    effects
+      agents -> topic -> quip.people_told.push(npc)
+      npcs -> topic.push {content = quip.content, id = quip.id, people_told = [agent]}
+    */
+
+  return text;
   }
   return { applies: applies, effects: effects, text: text };
 }
@@ -372,7 +506,6 @@ function take(agent, thing) {
 
     if (thing == "Amulet") {//thing is amulet
       knowledge["William Hang"] = "has";
-      knowledge["Amulet"] = "has";
     }
 
     if (thing == "Insurance Paper") {
@@ -481,10 +614,7 @@ function go(agent, place) {
              "salt and pepper hair, furiously filing documents " +
              "and flipping through files. He jerks to a stop as " +
              "you approach, and stands, stiffly. He turns to you " +
-             "and you notice his gaunt face and pale eyes. " +
-             "<q>Greetings</q>, he says in a soft lilt. " +
-             "<q>My name is James Stuart Cain.</q> He paces " +
-             "towards you and offers his hand.";
+             "and you notice his gaunt face and pale eyes. ";
     }
     else if (place == "Bakery") {
       text = "You enter the ruins of the bakery. Scorched " +
@@ -495,11 +625,7 @@ function go(agent, place) {
              "<br /><br /> As you make your way through the " +
              "kitchen, you come across a one armed, portly man. " +
              "He is wearing a suit, despite the ashy ruin you " +
-             "two stand in. Before you can say anything, he " +
-             "notices you, and begins to speak rapidly. <br /><br />" +
-             "<q>Oh, hello! Pat Wesley, at your service,</q><br /><br />" +
-             "he says in an irish brogue, whiskers quivering " +
-             "when he smirks.<br /><br /> <q>How can I help you?</q> ";
+             "two stand in.";
     }
     else if (place == "Chinatown") {
       text = "You're struck by the massive amount of damage done " +
@@ -519,10 +645,7 @@ function go(agent, place) {
       text = "Poking your head through the doorframe, you see a woman " +
              "in a rocking chair, head buried in her hands. Hearing the " +
              "draft, she looks up and sees you. Her face is lined with " +
-             "stress and weathered by sun.</br><q>Well, it's a bit rude of you " +
-             "to snoop, but come in.</q></br> She speaks with the slightest French " +
-             "accent. <q>My name is Palmyre.</q></br></br>This must be Mrs. Perry, the " +
-             "restaurant owner.</br></br><q>I suppose you've come to discuss the fire.</q>";
+             "stress and weathered by sun.</br>";
     }
     else if (place == "Wesley House") {
       text = "The Wesley house is austere and well kept. You go to knock on " +
@@ -571,11 +694,9 @@ function talk(agent1, agent2) {
   var text = "";
 
   function effects() {
-    // var line = agent1+" says hello to "+agent2;
-    // conversation_log[loc] = [line];
 
     var text = agent2 + " says hello to " + agent1 + "</br ></br >";
-
+    //text += findTalk(npc, );
     if (agent2 == "Sheriff Hayes") {
       if ((knowledge["William Hang"] == "given") && (knowledge["Firehouse"] == "known")) {
         if (knowledge["You"] == "unknown") {
@@ -633,7 +754,7 @@ function talk(agent1, agent2) {
                "to do it. I've decided to take the task into my own hands.</q> " +
                "</br></br><q>My name is James Perry. Mono County Supervisor. And you're " +
                "the deputy who's been looking into the fire.</q>";
-        knowledge["Mr. Perry"] = "known";
+               knowledge["Mr. Perry"] = "known";
       }
       else if ((knowledge["Mr. Perry"] == "known") && (knowledge["Letter"] == "known")) {
         text = "You show him the letter.</br></br>He smiles when you show him the " +
