@@ -95,17 +95,32 @@ var hang_knowledge =
   },
   {topic: "sheriff", quips: []}
 ]
+
 var you_knowledge = 
 [
-  {topics:  "",
-   quips :
-   [
-    {content: "",
-     id: "",
-     people_told: []
-    }
-   ]
+  {
+    topic:  "Amulet",
+    quips :
+    [
+      {
+        content: "Amulet tester content",
+        id: "you_amulet",
+        people_told: []
+      }
+    ]
+  },
+  {
+    topic:  "Letter",
+    quips :
+    [
+      {
+        content: "Letter tester content",
+        id: "you_letter",
+        people_told: []
+      }
+    ]
   }
+
 ]
 
 var character_knowledge = 
@@ -121,7 +136,7 @@ var character_knowledge =
 ]
 
 // lookup_knowledge(c) should return knowledge object k for {character: c, knowledge: k }
-/*function lookup_knowledge(c) {
+function lookup_knowledge(c) {
   for(var i = 0; i < character_knowledge.length; i++) {
     if(character_knowledge[i].character == c) {
       return character_knowledge[i].knowledge;
@@ -130,7 +145,7 @@ var character_knowledge =
   console.log("Couldn't find knowledge for character " + c);
   return undefined;
 }
-
+/*
 var topic_quip =
 [
   {topic: "firehouse" , quips: null },
@@ -155,7 +170,7 @@ function find_quips(c, t) {
       var charknowledge = character_knowledge[i].knowledge;
       //console.log(charknowledge);
       for(var j = 0; j < charknowledge.length; j++) {
-        //console.log(charknowledge[j]);
+      //console.log(charknowledge[j]);
         if (charknowledge[j].topic == t) {
           //console.log(charknowledge[j].quips[0].id);
           return charknowledge[j].quips;
@@ -465,7 +480,7 @@ function ask(agent, npc, thing) {
         text += "I don't know anything about that";
       }
       else {
-        text += quips[0].content;
+        text += quips[0].content;  //[0] will be changed when there are multiple quips for a single topic
         quips[0].people_told.push(agent);
       }
      return text;
@@ -482,7 +497,8 @@ function tell(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
   function effects() {
-
+  //console.log(lookup_knowledge(npc));
+  //console.log(lookup_knowledge(agent));  
     if(find_quips(agent, thing)!= undefined){
       quips = find_quips(agent, thing);
       if ( quips.length ) {
@@ -491,26 +507,30 @@ function tell(agent, npc, thing) {
             return undefined;
           }
         }
+        text += quips[0].content; 
+        
         quips[0].people_told.push(npc);
 
+        //checking if topic already exists in each characters knowledge
+        for (var i = 0; i < lookup_knowledge(npc).length; i++) {
+          var count = 0;
+          if (lookup_knowledge(npc)[i].topic == thing) {
+            lookup_knowledge(npc)[i].quips.push({content: quips[0].content, id: quips[0].id, people_told: [agent]});
+            count++;
+          }
+          if ((i == (lookup_knowledge(npc).length - 1)) && (count = 0)) {
+            lookup_knowledge.push({topic: thing, quips: [{content: quips[0].content, id: quips[0].id, people_told: [agent]}]});
+          }
+        }
+        
 
       }
       else {
         text += "I don't know what to tell you";
-
-
-
-
       }
     }
-    /*
-    agent can tell npc thing(quip) 
-      iif the thing(quip).people_told != npc
-    effects
-      agents -> topic -> quip.people_told.push(npc)
-      npcs -> topic.push {content = quip.content, id = quip.id, people_told = [agent]}
-    */
-
+  //console.log(lookup_knowledge(npc));
+  //console.log(lookup_knowledge(agent));
   return text;
   }
   return { applies: applies, effects: effects, text: text };
