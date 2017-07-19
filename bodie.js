@@ -120,19 +120,24 @@ var you_knowledge =
       }
     ]
   }
-
 ]
+var cain_knowledge = [];
+var wesley_knowledge = [];
+var hayes_knowledge = [];
+var mr_perry_knowledge = [];
+var mrs_perry_knowledge = [];
+var sj_knowledge = [];
 
 var character_knowledge = 
 [
   {character: "You", knowledge: you_knowledge},
-  {character: "William Hang", knowledge: hang_knowledge}
- // {character: "JS Cain", knowledge: cain_knowledge}
- // {character: "Pat Wesley", knowledge: wesley_knowledge}
- // {character: "Sheriff Hayes", knowledge: hayes_knowledge}
- // {character: "Mr Perry", knowledge: mr_perry_knowledge}
- // {character: "Mrs Perry", knowledge: mrs_perry_knowledge}
- // {character: "Shotgun Johnny", knowledge: sj_knowledge}
+  {character: "William Hang", knowledge: hang_knowledge},
+  {character: "JS Cain", knowledge: cain_knowledge},
+  {character: "Pat Wesley", knowledge: wesley_knowledge},
+  {character: "Sheriff Hayes", knowledge: hayes_knowledge},
+  {character: "Mr Perry", knowledge: mr_perry_knowledge},
+  {character: "Mrs Perry", knowledge: mrs_perry_knowledge},
+  {character: "Shotgun Johnny", knowledge: sj_knowledge}
 ]
 
 // lookup_knowledge(c) should return knowledge object k for {character: c, knowledge: k }
@@ -182,7 +187,9 @@ function find_quips(c, t) {
   console.log("Couldn't find knowledge for character " + c);
   return undefined;
 }
-
+//find_quips(c,t) output: array of quip objects, input: c, character string; t, thing string
+//returns undefined no topic for specifc character
+//assumes knowledge base for every character
 
 var descriptions =
   [{ thing: "William Hang", descr: "The town cook. He was the last person at the scene of the crime." },
@@ -472,24 +479,18 @@ function begin() { render(); }
 function ask(agent, npc, thing) {
   var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
   var text = "";
-
   function effects() {
     if(find_quips(npc, thing)!= undefined){
-      quips = find_quips(npc, thing);
-      if ( !quips.length ){
-        text += "I don't know anything about that";
-      }
-      else {
-        text += quips[0].content;  //[0] will be changed when there are multiple quips for a single topic
-        quips[0].people_told.push(agent);
-      }
-     return text;
+      var quipArray = find_quips(npc, thing);
+      text += quipArray[0].content;  //[0] will be changed when there are multiple quips for a single topic or with func for checking people told
+      quipArray[0].people_told.push(agent);
     }
-    else 
-      return undefined;
+    else {
+      text += "I don't know anything about that";
+    }
+  return text;
   }
-
-    return { applies: applies, effects: effects, text: text };
+  return { applies: applies, effects: effects, text: text };
 }
 
 
