@@ -58,7 +58,7 @@ var conversation_log =
 
   }
 //working on var topics to replace holding something for ask/tell
-var topics = {"Hat":"unknown", "Insurance Papers":"unknown", "Letter":"unknown", "Firehouse":"unknown", "Perrys":"known", "Amulet":"unknown"};
+var topics = {"Hat":"unknown", "Insurance Paper":"unknown", "Letter":"unknown", "Firehouse":"unknown", "Perrys":"known", "Amulet":"unknown"};
 var knowledge =
   {
     ["William Hang"]: "unknown",  
@@ -110,7 +110,7 @@ var you_knowledge =
     quips :
     [
       {
-        content: "Amulet tester content",
+        content: "I found an amulet at the firehouse",
         id: "you_amulet",
         people_told: []
       }
@@ -136,15 +136,19 @@ var wesley_knowledge =
     quips :
     [
       {//when this content is accessed, ->  locations.push("Perry House"); locations.push("Wesley House");
-        content: "<q>You're looking for the Perrys? They're in mourning " +
-                 "for their lost property, I suspect.</q> Before you can get " +
-                 "in a word, he prattles on, <q>Yes, I represent them and their " +
-                 "businesses. I am here to... look for any sign of foul play, and " +
-                 "to reclaim any found valuables for the Perry estate. A kind and " +
-                 "noble pair they are. If you seek them, check their home on Main " +
-                 "Street, but I warn you, they're likely to be in a sad state indeed.</q>",
+        content: "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
+                 "<q>They're in mourning " +
+                 "for their lost property, I suspect.</q></br ></br > Before you can get " +
+                 "in a word, he prattles on, </br ></br ><q>Yes, I represent them and " +
+                 "their businesses. I am here to... look for any sign of " +
+                 "foul play, and to reclaim any found valuables for the Perry " +
+                 "estate. A kind and noble pair they are. If you seek them, " +
+                 "check their home on Main Street, but I warn you, they're " +
+                 "likely to be in a sad state indeed.</q></br ></br >" +
+                 "<b>You now have access to the Perry and Wesley House</b>",
         id: "you_Perrys",
-        people_told: []
+        people_told: [],
+        //effect: locations.push("Perry House") locations.push("Wesley House")
       }
     ]
   }
@@ -291,7 +295,6 @@ function check_people_told(c, quip_Array) {
       for(var j = 0; j < quip_Array[i].people_told.length; j++) {
         if (quip_Array[i].people_told[j] == c){
           told = true;
-          return undefined;
         }
       }
       if (!told) {
@@ -660,7 +663,7 @@ function begin() { render(); }
 function ask(agent, npc, topic) {
   var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") &&
                 (find_quips(npc, topic)!= undefined) && (check_people_told(agent, find_quips(npc, topic)) != undefined);
-  var text = "";
+  var text = "";  
   function effects() {
     var quipArray = find_quips(npc, topic);
     var check = check_people_told(agent, quipArray);
