@@ -69,7 +69,8 @@ var knowledge =
     ["Mr. Perry"]: "unknown", 
     ["Shotgun Johnny"]: "unknown", 
     ["Hat"]: "unknown", //can model using location_of
-    ["Insurance"]: "unknown" //can model using location_of
+    ["Insurance"]: "unknown", //can model using location_of
+    ["Amulet"]: "unknown"
   }
 
 var hang_knowledge =  
@@ -729,6 +730,7 @@ function take(agent, thing) {
 
     if (thing == "Amulet") {//thing is amulet
       knowledge["William Hang"] = "has";
+      knowledge["Amulet"] = "known";
     }
 
     if (thing == "Insurance Paper") {
@@ -1126,6 +1128,7 @@ function give(agent1, agent2, thing) {
       location_of[thing] = agent2
       locations.push("Graveyard");
       knowledge["William Hang"] = "given";
+
       if (clothing_on[agent1] == thing) {
         clothing_on[agent1] = "";
       }
