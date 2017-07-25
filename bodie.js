@@ -136,7 +136,7 @@ var wesley_knowledge =
     quips :
     [
       {//when this content is accessed, ->  locations.push("Perry House"); locations.push("Wesley House");
-        content: "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
+        content:// "You ask Pat Wesley to give you some information about the Perrys.</br></br>" +
                  "<q>They're in mourning " +
                  "for their lost property, I suspect.</q></br ></br > Before you can get " +
                  "in a word, he prattles on, </br ></br ><q>Yes, I represent them and " +
@@ -160,19 +160,19 @@ var hayes_knowledge =
     quips :
     [
       {
-        content: "You ask the Sheriff to unlock the firehouse.</br></br > " +
-                 "The Sheriff responds, <q>" +
-                 "Sorry kid, the firehouse is gonna stay locked up " +
+        content: //"You ask the Sheriff to unlock the firehouse.</br></br > " +
+                 //"The Sheriff responds, <q>" +
+                 "<q>Sorry kid, the firehouse is gonna stay locked up " +
                  "tight unless you have a good reason to search it, " +
                  "at the firefighters request.</q>",
         id: "hayes_lock",
         people_told: []
       },
       {
-        content:  "</br > You tell the sheriff what Hang told you about " +
-                  "the firehouse, and he grimaces.</br ></br >" +
-                  "Sheriff Hayes says, <q>I wish he had just told us his story. " +
-                  "I can't release him yet, but you should hunt down that lead. " +
+        content:  //"</br > You tell the sheriff what Hang told you about " +
+                  //"the firehouse, and he grimaces.</br ></br >" +
+                  //"He grimaces.</br ></br > Sheriff Hayes says, <q>I wish he had just told us his story. " +
+                  "<q>I wish he had just told us his story. I can't release him yet, but you should hunt down that lead. " +
                   "Here's the key.</q></br ></br >You pocket it.",
         id: "hayes_lock2",
         people_told: []
@@ -210,8 +210,9 @@ var mrs_perry_knowledge =
     quips :
     [
       {
-        content: "You pull out the document that Cain gave you and hand it to her. " +
-                 "Mrs. Perry is unimpressed.</br></br><q>Well? Why show me what I already " +
+        content: //"You pull out the document that Cain gave you and hand it to her. " +
+                 //"Mrs. Perry is unimpressed.</br></br><q>
+                 "Well? Why show me what I already " +
                  "know? JS Cain likely told you I was up to no good, eh? He's " +
                  "hated us for years.</q>",
         id: "mrs_perry_insurance",
@@ -227,8 +228,8 @@ var sj_knowledge =
     quips :
     [
       {
-        content: "You show him the hat you found in the firehouse.</br></br><q>Yeah, " +
-                 "that's me hat...</q></br></br>Johnny blinks.</br></br><q>Where'd you find " +
+        content: //"You show him the hat you found in the firehouse.</br></br><q>Yeah, " +
+                 "Yeah, that's me hat...</q></br></br>Johnny blinks.</br></br><q>Where'd you find " +
                  "that? I have another but that's my favorite. I got a prop " +
                  "for ya - give it back? Please?</q></br></br>He realizes that he's " +
                  "been made. <q></br></br>Damn. Alright, fine. I was there that night, " +
@@ -255,7 +256,8 @@ var character_knowledge =
   {character: "Shotgun Johnny", knowledge: sj_knowledge}
 ]
 
-// lookup_knowledge(c) should return knowledge object k for {character: c, knowledge: k }
+// lookup_knowledge(c) input: character string, output: knowledge object for specific character
+// returns undefined if no knowledge base for character 
 function lookup_knowledge(c) {
   for(var i = 0; i < character_knowledge.length; i++) {
     if(character_knowledge[i].character == c) {
@@ -663,7 +665,8 @@ function begin() { render(); }
 function ask(agent, npc, topic) {
   var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") &&
                 (find_quips(npc, topic)!= undefined) && (check_people_told(agent, find_quips(npc, topic)) != undefined);
-  var text = "";  
+  var text = agent + " ask about the " + topic + ". </br ></br >" +
+             npc + " responds, ";  
   function effects() {
     var quipArray = find_quips(npc, topic);
     var check = check_people_told(agent, quipArray);
