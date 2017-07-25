@@ -50,7 +50,8 @@ var conversation_log =
     "William Hang": [],
 
   }
-
+//working on var topics to replace holding something for ask/tell
+var topics = {"Hat":"unknown", "Insurance":"unknown", "Letter":"unknown", "Firehouse":"known", "Perrys":"known", "Amulet":"unknown"};
 var knowledge =
   {
     ["William Hang"]: "unknown",  
@@ -264,10 +265,10 @@ function find_quips(c, t) {
           return charknowledge[j].quips;
         }
       }
-      console.log("Couldn't find quips for topic " + t);
+      //console.log("Couldn't find quips for topic " + t);
     }
   }
-  console.log("Couldn't find knowledge for character " + c);
+  //console.log("Couldn't find knowledge for character " + c);
   return undefined;
 }
 //find_quips(c,t) output: array of quip objects, input: c, character string; t, thing string
@@ -275,13 +276,23 @@ function find_quips(c, t) {
 //assumes knowledge base is declared for every character
 
 function check_people_told(c, quip_Array) {
-  for(var i = 0; i < quips_Array[0].people_told[i]; i++){
-    if (quips[0].people_told[i] == c){
-      return undefined;
+  for(var i = 0; i < quip_Array.length; i++){
+    if(quip_Array[i].people_told.length == 0) {
+      return quip_Array[i];
     }
+    else {
+      for(var j = 0; j < quip_Array[i].people_told.length; j++) {
+        if (quip_Array[i].people_told[j] == c){
+          return undefined;
+        }
+      }
+     // return quip_Array[i];
+    }
+    return quip_Array[i];
   }
-  return "not told";
+  return undefined;
 }
+//check_people_told used in ask, still needs work done to it
 
 //check_people_told
 var descriptions =
@@ -543,13 +554,13 @@ function generate_choices() {
         if (give(c, c2, thing_held).applies) {
           choices.push({ op: "give", args: [c, c2, thing_held] });
         }
-        if (ask(c, c2, thing_held).applies) {
+      /*  if (ask(c, c2, thing_held).applies) {
           choices.push({ op: "ask", args: [c, c2, thing_held] });
         }
         if (tell(c, c2, thing_held).applies) {
           choices.push({ op: "tell", args: [c, c2, thing_held] });
         }
-
+      */
       }
     }
     // places to move
@@ -560,6 +571,34 @@ function generate_choices() {
         choices.push({ op: "go", args: [c, l] });
       }
     }
+    //for (var i = 0; i < lookup_knowledge(c).length; i++) {
+    for (var topic in topics) {
+      //var topic = lookup_knowledge(c)[i].topic;
+      var t = topic;
+      for (var ci2 in npcs) {
+        var c2 = npcs[ci2];
+        if (ask(c, c2, t).applies) {
+          choices.push({ op: "ask", args: [c, c2, t] });
+        }
+        if (tell(c, c2, t).applies) {
+          choices.push({ op: "tell", args: [c, c2, t] });
+        }
+      }
+    }
+   /* for (var topic in topics) {
+      var t = topics[topic];  
+
+      for (var ci2 in npcs) {
+        var c2 = npcs[ci2]
+        if (ask(c, c2, t).applies) {
+          choices.push({ op: "ask", args: [c, c2, t] });
+        }
+        if (tell(c, c2, t).applies) {
+          choices.push({ op: "tell", args: [c, c2, t] });
+        }
+
+      }
+    }*/
 
 
   } //end loop over characters
@@ -569,50 +608,41 @@ function generate_choices() {
 
 function begin() { render(); }
 
-function ask(agent, npc, thing) {
-  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
+function ask(agent, npc, topic) {
+  var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") && (find_quips(npc, topic)!= undefined) && (check_people_told(agent, find_quips(npc, topic)) != undefined);
   var text = "";
   function effects() {
-    if(find_quips(npc, thing)!= undefined){
-      var quipArray = find_quips(npc, thing);
-      text += quipArray[0].content;  //[0] will be changed when there are multiple quips for a single topic or with func for checking people told
-      quipArray[0].people_told.push(agent);
-    }
-    else {
-      text += "I don't know anything about that";
-    }
+
+    var quipArray = find_quips(npc, topic);
+    var check = check_people_told(agent, quipArray);
+    text += check.content;
+    check.people_told.push(agent);
   return text;
   }
   return { applies: applies, effects: effects, text: text };
 }
 
 
-function tell(agent, npc, thing) {
-  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
+function tell(agent, npc, topic) {
+  var applies = (location_of[agent] == location_of[npc]) && (find_quips(agent, topic)!= undefined) && (check_people_told(npc, find_quips(agent, topic)) != undefined);
   var text = "";
   function effects() { 
-    if(find_quips(agent, thing)!= undefined){
-      quips = find_quips(agent, thing);
-        for(var i = 0; i < quips[0].people_told.length; i++){
-          if (quips[0].people_told[i] == npc){
-            text += "I've told you everything I know."
-            return text;
-          }
-        }
-        text += quips[0].content; 
+      //  var quips = find_quips(agent, topic);
+        //var neww = check_people_told(agent, quips);
+       // console.log(find_quips(agent, topic));
+       // console.log(check_people_told(npc, find_quips(agent, topic)));
+        var rat = check_people_told(npc, find_quips(agent, topic));
         
-        quips[0].people_told.push(npc);
-
-        if (find_quips(npc, thing) != undefined) {
-          find_quips(npc,thing).push({content: quips[0].content, id: quips[0].id, people_told: [agent]});
+        text += rat.content; 
+        rat.people_told.push(npc);
+       // console.log(find_quips(agent, topic));
+       // console.log(check_people_told(npc, find_quips(agent, topic)));
+        if (find_quips(npc, topic) != undefined) {
+          find_quips(npc,topic).push({content: rat.content, id: rat.id, people_told: [agent]});
         }
         else {
-          lookup_knowledge(npc).push({topic: thing, quips: [{content: quips[0].content, id: quips[0].id, people_told: [agent]}]});   
+          lookup_knowledge(npc).push({topic: topic, quips: [{content: rat.content, id: rat.id, people_told: [agent]}]});   
         }
-    }
-    else {
-      text += "I don't know what to tell you";
-    }
   return text;
   }
 return { applies: applies, effects: effects, text: text };
