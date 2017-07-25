@@ -58,7 +58,7 @@ var conversation_log =
 
   }
 //working on var topics to replace holding something for ask/tell
-var topics = {"Hat":"unknown", "Insurance":"unknown", "Letter":"unknown", "Firehouse":"known", "Perrys":"known", "Amulet":"unknown"};
+var topics = {"Hat":"unknown", "Insurance Papers":"unknown", "Letter":"unknown", "Firehouse":"unknown", "Perrys":"known", "Amulet":"unknown"};
 var knowledge =
   {
     ["William Hang"]: "unknown",  
@@ -172,6 +172,7 @@ var hayes_knowledge =
                   "Here's the key.</q></br ></br >You pocket it.",
         id: "hayes_lock2",
         people_told: []
+        //conditions: ((knowledge["William Hang"] == "given") && (knowledge["Firehouse"] == "known"))
       }
     ]
   }
@@ -201,7 +202,7 @@ var mr_perry_knowledge =
 var mrs_perry_knowledge = 
 [
   {
-    topic:  "Insurance",
+    topic:  "Insurance Paper",
     quips :
     [
       {
@@ -245,8 +246,8 @@ var character_knowledge =
   {character: "JS Cain", knowledge: cain_knowledge},
   {character: "Pat Wesley", knowledge: wesley_knowledge},
   {character: "Sheriff Hayes", knowledge: hayes_knowledge},
-  {character: "Mr Perry", knowledge: mr_perry_knowledge},
-  {character: "Mrs Perry", knowledge: mrs_perry_knowledge},
+  {character: "Mr. Perry", knowledge: mr_perry_knowledge},
+  {character: "Mrs. Perry", knowledge: mrs_perry_knowledge},
   {character: "Shotgun Johnny", knowledge: sj_knowledge}
 ]
 
@@ -263,13 +264,10 @@ function lookup_knowledge(c) {
 
 function find_quips(c, t) {
   for(var i = 0; i < character_knowledge.length; i++) {
-    if(character_knowledge[i].character == c) { //now we are at characters knowledge
+    if(character_knowledge[i].character == c) { 
       var charknowledge = character_knowledge[i].knowledge;
-      //console.log(charknowledge);
       for(var j = 0; j < charknowledge.length; j++) {
-      //console.log(charknowledge[j]);
         if (charknowledge[j].topic == t) {
-          //console.log(charknowledge[j].quips[0].id);
           return charknowledge[j].quips;
         }
       }
@@ -289,18 +287,23 @@ function check_people_told(c, quip_Array) {
       return quip_Array[i];
     }
     else {
+      var told = false;
       for(var j = 0; j < quip_Array[i].people_told.length; j++) {
         if (quip_Array[i].people_told[j] == c){
+          told = true;
           return undefined;
         }
       }
-     // return quip_Array[i];
+      if (!told) {
+       return quip_Array[i];
+      }
     }
-    return quip_Array[i];
   }
   return undefined;
 }
-//check_people_told used in ask, still needs work done to it
+//check_people_told(c, quip_Array) output: a quip object, input: c, character string who you are checking if told
+//input: quip_Array is an array of quips from character knowledge
+//returns undefined if all quips have been said to character c
 
 //check_people_told
 var descriptions =
@@ -610,13 +613,6 @@ function generate_choices() {
         if (give(c, c2, thing_held).applies) {
           choices.push({ op: "give", args: [c, c2, thing_held] });
         }
-      /*  if (ask(c, c2, thing_held).applies) {
-          choices.push({ op: "ask", args: [c, c2, thing_held] });
-        }
-        if (tell(c, c2, thing_held).applies) {
-          choices.push({ op: "tell", args: [c, c2, thing_held] });
-        }
-        */
       }
       
       //examining it
@@ -654,22 +650,6 @@ function generate_choices() {
         }
       }
     }
-   /* for (var topic in topics) {
-      var t = topics[topic];  
-
-      for (var ci2 in npcs) {
-        var c2 = npcs[ci2]
-        if (ask(c, c2, t).applies) {
-          choices.push({ op: "ask", args: [c, c2, t] });
-        }
-        if (tell(c, c2, t).applies) {
-          choices.push({ op: "tell", args: [c, c2, t] });
-        }
-
-      }
-    }*/
-
-
   } //end loop over characters
   return choices;
 
@@ -678,10 +658,10 @@ function generate_choices() {
 function begin() { render(); }
 
 function ask(agent, npc, topic) {
-  var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") && (find_quips(npc, topic)!= undefined) && (check_people_told(agent, find_quips(npc, topic)) != undefined);
+  var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") &&
+                (find_quips(npc, topic)!= undefined) && (check_people_told(agent, find_quips(npc, topic)) != undefined);
   var text = "";
   function effects() {
-
     var quipArray = find_quips(npc, topic);
     var check = check_people_told(agent, quipArray);
     text += check.content;
@@ -693,24 +673,18 @@ function ask(agent, npc, topic) {
 
 
 function tell(agent, npc, topic) {
-  var applies = (location_of[agent] == location_of[npc]) && (find_quips(agent, topic)!= undefined) && (check_people_told(npc, find_quips(agent, topic)) != undefined);
+  var applies = (location_of[agent] == location_of[npc]) && (find_quips(agent, topic)!= undefined) && 
+                (check_people_told(npc, find_quips(agent, topic)) != undefined) && (topics[topic] == "known");
   var text = "";
   function effects() { 
-      //  var quips = find_quips(agent, topic);
-        //var neww = check_people_told(agent, quips);
-       // console.log(find_quips(agent, topic));
-       // console.log(check_people_told(npc, find_quips(agent, topic)));
-        var rat = check_people_told(npc, find_quips(agent, topic));
-        
-        text += rat.content; 
-        rat.people_told.push(npc);
-       // console.log(find_quips(agent, topic));
-       // console.log(check_people_told(npc, find_quips(agent, topic)));
+        var quip = check_people_told(npc, find_quips(agent, topic));
+        text += quip.content; 
+        quip.people_told.push(npc);
         if (find_quips(npc, topic) != undefined) {
-          find_quips(npc,topic).push({content: rat.content, id: rat.id, people_told: [agent]});
+          find_quips(npc,topic).push({content: quip.content, id: quip.id, people_told: [agent]});
         }
         else {
-          lookup_knowledge(npc).push({topic: topic, quips: [{content: rat.content, id: rat.id, people_told: [agent]}]});   
+          lookup_knowledge(npc).push({topic: topic, quips: [{content: quip.content, id: quip.id, people_told: [agent]}]});   
         }
   return text;
   }
@@ -721,11 +695,12 @@ return { applies: applies, effects: effects, text: text };
 function take(agent, thing) {
 
   var applies = (location_of[agent] == location_of[thing]) && (characters.indexOf(thing) < 0) &&
-    (npcs.indexOf(thing) < 0);
+                (npcs.indexOf(thing) < 0);
   var text = "";
 
   function effects() {
     location_of[thing] = agent;
+    topics[thing] = "known";//allows you to ask/tell about this thing
     var text = agent + " take the " + thing + ".";
 
     if (thing == "Amulet") {//thing is amulet
@@ -1209,9 +1184,11 @@ function open(agent, thing) {
             "housing as well, similar to a sun hat. Stitched onto " +
             "the brim is a monogram, <q>SJ</q>.";
           location_of["Hat"] = "Firehouse";
+          topics["Hat"] = "known"; 
         }
         else {
           text = "You try to look inside, but you're stopped by a heavy lock.";
+          topics["Firehouse"] = "known";
         }
       }
       else { //if NPC opens
