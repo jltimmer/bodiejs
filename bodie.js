@@ -57,7 +57,8 @@ var conversation_log =
     "William Hang": [],
 
   }
-
+//working on var topics to replace holding something for ask/tell
+var topics = {"Hat":"unknown", "Insurance":"unknown", "Letter":"unknown", "Firehouse":"known", "Perrys":"known", "Amulet":"unknown"};
 var knowledge =
   {
     ["William Hang"]: "unknown",  
@@ -71,11 +72,10 @@ var knowledge =
     ["Insurance"]: "unknown" //can model using location_of
   }
 
-
 var hang_knowledge =  
-[
+[ 
   {
-    topic: "firehouse",
+    topic: "Firehouse",
     quips: 
     [
       { 
@@ -99,8 +99,7 @@ var hang_knowledge =
       }
     ]
 
-  },
-  {topic: "sheriff", quips: []}
+  }
 ]
 
 var you_knowledge = 
@@ -117,29 +116,137 @@ var you_knowledge =
     ]
   },
   {
-    topic:  "Letter",
+    topic:  "Perrys",
     quips :
     [
       {
-        content: "Letter tester content",
-        id: "you_letter",
+        content: "I am looking for the Perry's",
+        id: "you_Perrys",
         people_told: []
       }
     ]
   }
+]
+var cain_knowledge = [];
+var wesley_knowledge = 
+[
+  {
+    topic:  "Perrys",
+    quips :
+    [
+      {//when this content is accessed, ->  locations.push("Perry House"); locations.push("Wesley House");
+        content: "<q>You're looking for the Perrys? They're in mourning " +
+                 "for their lost property, I suspect.</q> Before you can get " +
+                 "in a word, he prattles on, <q>Yes, I represent them and their " +
+                 "businesses. I am here to... look for any sign of foul play, and " +
+                 "to reclaim any found valuables for the Perry estate. A kind and " +
+                 "noble pair they are. If you seek them, check their home on Main " +
+                 "Street, but I warn you, they're likely to be in a sad state indeed.</q>",
+        id: "you_Perrys",
+        people_told: []
+      }
+    ]
+  }
+]
+var hayes_knowledge = 
+[
+  {
+    topic:  "Firehouse",
+    quips :
+    [
+      {
+        content: "You ask the Sheriff to unlock the firehouse.</br></br > " +
+                 "The Sheriff responds, <q>" +
+                 "Sorry kid, the firehouse is gonna stay locked up " +
+                 "tight unless you have a good reason to search it, " +
+                 "at the firefighters request.</q>",
+        id: "hayes_lock",
+        people_told: []
+      },
+      {
+        content:  "</br > You tell the sheriff what Hang told you about " +
+                  "the firehouse, and he grimaces.</br ></br >" +
+                  "Sheriff Hayes says, <q>I wish he had just told us his story. " +
+                  "I can't release him yet, but you should hunt down that lead. " +
+                  "Here's the key.</q></br ></br >You pocket it.",
+        id: "hayes_lock2",
+        people_told: []
+      }
+    ]
+  }
+]
 
+var mr_perry_knowledge = 
+[
+  {
+    topic:  "Letter",
+    quips :
+    [
+      {
+        content: "You show him the letter.</br></br>He smiles when you show him the " +
+                 "letter he sent to Pat Wesley. </br></br><q>Well, you're " +
+                 "quite the investigator, aren't you? Unfortunately, " +
+                 "that's not going to hold up in court. It's speculative, illegally " +
+                 "obtained, and with Wesley on my side no court will indict me on such " +
+                 "evidence. Besides. This is a place of constant change. Fires occur " +
+                 "naturally, after all - they destroy the dead wood.</q></br></br> He turns away " +
+                 "from you.",
+        id: "mr_perry_letter",
+        people_told: []
+      }
+    ]
+  }
+]
+var mrs_perry_knowledge = 
+[
+  {
+    topic:  "Insurance",
+    quips :
+    [
+      {
+        content: "You pull out the document that Cain gave you and hand it to her. " +
+                 "Mrs. Perry is unimpressed.</br></br><q>Well? Why show me what I already " +
+                 "know? JS Cain likely told you I was up to no good, eh? He's " +
+                 "hated us for years.</q>",
+        id: "mrs_perry_insurance",
+        people_told: []
+      }
+    ]
+  }
+]
+var sj_knowledge = 
+[
+  {
+    topic:  "Hat",
+    quips :
+    [
+      {
+        content: "You show him the hat you found in the firehouse.</br></br><q>Yeah, " +
+                 "that's me hat...</q></br></br>Johnny blinks.</br></br><q>Where'd you find " +
+                 "that? I have another but that's my favorite. I got a prop " +
+                 "for ya - give it back? Please?</q></br></br>He realizes that he's " +
+                 "been made. <q></br></br>Damn. Alright, fine. I was there that night, " +
+                 "but you can't pin the arson on me. There's no way I could " +
+                 "have set the fire and sabotaged the water main at once. Now, " +
+                 "can I at least have my hat back?</q></br></br>You refuse to give him " +
+                 "the evidence.",
+        id: "sj_hat",
+        people_told: []
+      }
+    ]
+  }
 ]
 
 var character_knowledge = 
 [
   {character: "You", knowledge: you_knowledge},
-  {character: "William Hang", knowledge: hang_knowledge}
- // {character: "JS Cain", knowledge: cain_knowledge}
- // {character: "Pat Wesley", knowledge: wesley_knowledge}
- // {character: "Sheriff Hayes", knowledge: hayes_knowledge}
- // {character: "Mr Perry", knowledge: mr_perry_knowledge}
- // {character: "Mrs Perry", knowledge: mrs_perry_knowledge}
- // {character: "Shotgun Johnny", knowledge: sj_knowledge}
+  {character: "William Hang", knowledge: hang_knowledge},
+  {character: "JS Cain", knowledge: cain_knowledge},
+  {character: "Pat Wesley", knowledge: wesley_knowledge},
+  {character: "Sheriff Hayes", knowledge: hayes_knowledge},
+  {character: "Mr Perry", knowledge: mr_perry_knowledge},
+  {character: "Mrs Perry", knowledge: mrs_perry_knowledge},
+  {character: "Shotgun Johnny", knowledge: sj_knowledge}
 ]
 
 // lookup_knowledge(c) should return knowledge object k for {character: c, knowledge: k }
@@ -152,24 +259,6 @@ function lookup_knowledge(c) {
   console.log("Couldn't find knowledge for character " + c);
   return undefined;
 }
-/*
-var topic_quip =
-[
-  {topic: "firehouse" , quips: null },
-  {topic: "amulet" , quips: null}
-]
-
-// lookup topic quips
-function lookup_topic_quips(t) {
-  for(var i = 0; i < topic_quip.length; i++) {
-    if(topic_quip[i].topic == t) {
-      return topic_quip[i].quips;
-    }
-  }
-  console.log("Couldn't find quip for topic " + t);
-  return undefined;
-}*/
-// lookup_topic(t) should return quip object q for {topic: t, quips: q}
 
 function find_quips(c, t) {
   for(var i = 0; i < character_knowledge.length; i++) {
@@ -183,14 +272,36 @@ function find_quips(c, t) {
           return charknowledge[j].quips;
         }
       }
-      console.log("Couldn't find quips for topic " + t);
+      //console.log("Couldn't find quips for topic " + t);
     }
   }
-  console.log("Couldn't find knowledge for character " + c);
+  //console.log("Couldn't find knowledge for character " + c);
   return undefined;
 }
+//find_quips(c,t) output: array of quip objects, input: c, character string; t, thing string
+//returns undefined no topic for specifc character
+//assumes knowledge base is declared for every character
 
+function check_people_told(c, quip_Array) {
+  for(var i = 0; i < quip_Array.length; i++){
+    if(quip_Array[i].people_told.length == 0) {
+      return quip_Array[i];
+    }
+    else {
+      for(var j = 0; j < quip_Array[i].people_told.length; j++) {
+        if (quip_Array[i].people_told[j] == c){
+          return undefined;
+        }
+      }
+     // return quip_Array[i];
+    }
+    return quip_Array[i];
+  }
+  return undefined;
+}
+//check_people_told used in ask, still needs work done to it
 
+//check_people_told
 var descriptions =
   [{ thing: "William Hang", descr: "The town cook. He was the last person at the scene of the crime." },
   { thing: "Firehouse", descr: "The town's firehouse. A nearby ditch houses a water valve." },
@@ -498,12 +609,13 @@ function generate_choices() {
         if (give(c, c2, thing_held).applies) {
           choices.push({ op: "give", args: [c, c2, thing_held] });
         }
-        if (ask(c, c2, thing_held).applies) {
+      /*  if (ask(c, c2, thing_held).applies) {
           choices.push({ op: "ask", args: [c, c2, thing_held] });
         }
         if (tell(c, c2, thing_held).applies) {
           choices.push({ op: "tell", args: [c, c2, thing_held] });
         }
+        */
       }
       
       //examining it
@@ -527,6 +639,34 @@ function generate_choices() {
         choices.push({ op: "go", args: [c, l] });
       }
     }
+    //for (var i = 0; i < lookup_knowledge(c).length; i++) {
+    for (var topic in topics) {
+      //var topic = lookup_knowledge(c)[i].topic;
+      var t = topic;
+      for (var ci2 in npcs) {
+        var c2 = npcs[ci2];
+        if (ask(c, c2, t).applies) {
+          choices.push({ op: "ask", args: [c, c2, t] });
+        }
+        if (tell(c, c2, t).applies) {
+          choices.push({ op: "tell", args: [c, c2, t] });
+        }
+      }
+    }
+   /* for (var topic in topics) {
+      var t = topics[topic];  
+
+      for (var ci2 in npcs) {
+        var c2 = npcs[ci2]
+        if (ask(c, c2, t).applies) {
+          choices.push({ op: "ask", args: [c, c2, t] });
+        }
+        if (tell(c, c2, t).applies) {
+          choices.push({ op: "tell", args: [c, c2, t] });
+        }
+
+      }
+    }*/
 
 
   } //end loop over characters
@@ -536,71 +676,44 @@ function generate_choices() {
 
 function begin() { render(); }
 
-function ask(agent, npc, thing) {
-  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
-  var text = "";
-
-  function effects() {
-    if(find_quips(npc, thing)!= undefined){
-      quips = find_quips(npc, thing);
-      if ( !quips.length ){
-        text += "I don't know anything about that";
-      }
-      else {
-        text += quips[0].content;  //[0] will be changed when there are multiple quips for a single topic
-        quips[0].people_told.push(agent);
-      }
-     return text;
-    }
-    else 
-      return undefined;
-  }
-
-    return { applies: applies, effects: effects, text: text };
-}
-
-
-function tell(agent, npc, thing) {
-  var applies = (location_of[thing] == agent) && (location_of[agent] == location_of[npc]);
+function ask(agent, npc, topic) {
+  var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") && (find_quips(npc, topic)!= undefined) && (check_people_told(agent, find_quips(npc, topic)) != undefined);
   var text = "";
   function effects() {
-  //console.log(lookup_knowledge(npc));
-  //console.log(lookup_knowledge(agent));  
-    if(find_quips(agent, thing)!= undefined){
-      quips = find_quips(agent, thing);
-      if ( quips.length ) {
-        for(var i = 0; i < quips[0].people_told[i]; i++){
-          if (quips[0].people_told[i] == npc){
-            return undefined;
-          }
-        }
-        text += quips[0].content; 
-        
-        quips[0].people_told.push(npc);
 
-        //checking if topic already exists in each characters knowledge
-        for (var i = 0; i < lookup_knowledge(npc).length; i++) {
-          var count = 0;
-          if (lookup_knowledge(npc)[i].topic == thing) {
-            lookup_knowledge(npc)[i].quips.push({content: quips[0].content, id: quips[0].id, people_told: [agent]});
-            count++;
-          }
-          if ((i == (lookup_knowledge(npc).length - 1)) && (count = 0)) {
-            lookup_knowledge.push({topic: thing, quips: [{content: quips[0].content, id: quips[0].id, people_told: [agent]}]});
-          }
-        }
-        
-
-      }
-      else {
-        text += "I don't know what to tell you";
-      }
-    }
-  //console.log(lookup_knowledge(npc));
-  //console.log(lookup_knowledge(agent));
+    var quipArray = find_quips(npc, topic);
+    var check = check_people_told(agent, quipArray);
+    text += check.content;
+    check.people_told.push(agent);
   return text;
   }
   return { applies: applies, effects: effects, text: text };
+}
+
+
+function tell(agent, npc, topic) {
+  var applies = (location_of[agent] == location_of[npc]) && (find_quips(agent, topic)!= undefined) && (check_people_told(npc, find_quips(agent, topic)) != undefined);
+  var text = "";
+  function effects() { 
+      //  var quips = find_quips(agent, topic);
+        //var neww = check_people_told(agent, quips);
+       // console.log(find_quips(agent, topic));
+       // console.log(check_people_told(npc, find_quips(agent, topic)));
+        var rat = check_people_told(npc, find_quips(agent, topic));
+        
+        text += rat.content; 
+        rat.people_told.push(npc);
+       // console.log(find_quips(agent, topic));
+       // console.log(check_people_told(npc, find_quips(agent, topic)));
+        if (find_quips(npc, topic) != undefined) {
+          find_quips(npc,topic).push({content: rat.content, id: rat.id, people_told: [agent]});
+        }
+        else {
+          lookup_knowledge(npc).push({topic: topic, quips: [{content: rat.content, id: rat.id, people_told: [agent]}]});   
+        }
+  return text;
+  }
+return { applies: applies, effects: effects, text: text };
 }
 
 
@@ -681,7 +794,85 @@ function go(agent, place) {
           "Peering into the lavish windows, " +
           "you see that nobody's home." +
           "You should check elsewhere.";
+      }
+      else if (place == "JS Cain's House") {
+        text = "You knock on the door to no avail. " +
+          "Peering into the lavish windows, " +
+          "you see that nobody's home." +
+          "You should check elsewhere.";
 
+      }
+    else if (place == "Jail") {
+      if (knowledge["William Hang"] == "unknown") {//amulet is not in possesion of you
+        text = "The man in the jail cell looks almost asleep. " +
+               "</br ></br >Check somewhere else. ";
+      }
+      else if (knowledge["William Hang"] == "has") {
+        text = "Hang looks awake, so you ask about " +
+               "the events of the night, but he refuses to talk about that. <q>All I " +
+               "want is to find my family,</q> is all you  " +
+               "can get out of him. You reply that he's going " +
+               "to have to help you out before you can make that " +
+               "happen. He sits silently on the other side of the bars. " +
+               "Absently, you pull out the amulet you found and take " +
+               "another look. </br ></br >Hang's eyes go wide. <q>My god, " +
+               "that survived the fire? I never suspected - thank you. " +
+               "Please, can I have it?</q> ";
+      }
+      else if (knowledge["William Hang"] == "given") {
+        text = "You've already spoken to the cook. He is turned " +
+               "away, in the corner of the cell.";
+      }
+    }
+      else if (place == "Bank") {
+        text = "You enter the imposing Bodie Bank, " +
+          "the most modern and expensive of all " +
+          "the buildings in town. The safe stands " +
+          "severe in the center, between brick and " +
+          "steel bar. Facing the opposite wall is a " +
+          "redwood desk. <br /><br />" +
+
+          "Sitting there is a straight backed man with " +
+          "salt and pepper hair, furiously filing documents " +
+          "and flipping through files. He jerks to a stop as " +
+          "you approach, and stands, stiffly. He turns to you " +
+          "and you notice his gaunt face and pale eyes. ";
+      }
+      else if (place == "Bakery") {
+        text = "You enter the ruins of the bakery. Scorched " +
+          "bricks litter the ground, and white ash is " +
+          "mixed into the dirt. The blaze that took out " +
+          "half of Bodie started here. You see gnarled " +
+          "cast iron about, indicating you're in the kitchen." +
+          "<br /><br /> As you make your way through the " +
+          "kitchen, you come across a one armed, portly man. " +
+          "He is wearing a suit, despite the ashy ruin you " +
+          "two stand in.";
+      }
+      else if (place == "Chinatown") {
+        text = "You're struck by the massive amount of damage done " +
+          "to the Chinatown of Bodie, north of town. It seems " +
+          "that the fire truly torched the neighborhood.<br />You " +
+          "recall a faint memory of a celebration here, with " +
+          "brightly colored ribbons hanging over the streets " +
+          "and a huge parade. Only an echo remains, in the few " +
+          "red roofed homes miraculously left standing. <br /><br />" +
+          "You investigate the nearest shack, torched on the " +
+          "outside but fairly preserved inside. On a ramshackle " +
+          "desk is a wooden amulet, on a twine string. Perplexed, " +
+          "you pick it up. A faded sketch of a girl is inside. " +
+          "<br /><br /> This is a desolate place.";
+      }
+      else if (place == "Perry House") {
+        text = "Poking your head through the doorframe, you see a woman " +
+          "in a rocking chair, head buried in her hands. Hearing the " +
+          "draft, she looks up and sees you. Her face is lined with " +
+          "stress and weathered by sun.</br>";
+      }
+      else if (place == "Wesley House") {
+        text = "The Wesley house is austere and well kept. You go to knock on " +
+          "the door, but at the first rap the door creaks open. " +
+          "</br></br>You go inside the " + place + ".</br></br> You see a letter.";
       }
       else if (place == "Jail") {
         if (knowledge["William Hang"] == "unknown") {//amulet is not in possesion of you
