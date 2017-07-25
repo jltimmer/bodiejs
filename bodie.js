@@ -797,13 +797,6 @@ function go(agent, place) {
           "you see that nobody's home." +
           "You should check elsewhere.";
       }
-      else if (place == "JS Cain's House") {
-        text = "You knock on the door to no avail. " +
-          "Peering into the lavish windows, " +
-          "you see that nobody's home." +
-          "You should check elsewhere.";
-
-      }
     else if (place == "Jail") {
       if (knowledge["William Hang"] == "unknown") {//amulet is not in possesion of you
         text = "The man in the jail cell looks almost asleep. " +
@@ -875,79 +868,6 @@ function go(agent, place) {
         text = "The Wesley house is austere and well kept. You go to knock on " +
           "the door, but at the first rap the door creaks open. " +
           "</br></br>You go inside the " + place + ".</br></br> You see a letter.";
-      }
-      else if (place == "Jail") {
-        if (knowledge["William Hang"] == "unknown") {//amulet is not in possesion of you
-          text = "The man in the jail cell looks almost asleep. " +
-            "</br ></br >Check somewhere else. ";
-        }
-        else if (knowledge["William Hang"] == "has") {
-          text = "Hang looks awake, so you ask about " +
-            "the events of the night, but he refuses to talk about that. <q>All I " +
-            "want is to find my family,</q> is all you  " +
-            "can get out of him. You reply that he's going " +
-            "to have to help you out before you can make that " +
-            "happen. He sits silently on the other side of the bars. " +
-            "Absently, you pull out the amulet you found and take " +
-            "another look. </br ></br >Hang's eyes go wide. <q>My god, " +
-            "that survived the fire? I never suspected - thank you. " +
-            "Please, can I have it?</q> ";
-        }
-        else if (knowledge["William Hang"] == "given") {
-          text = "You've already spoken to the cook. He is turned " +
-            "away, in the corner of the cell.";
-        }
-      }
-      else if (place == "Bank") {
-        text = "You enter the imposing Bodie Bank, " +
-          "the most modern and expensive of all " +
-          "the buildings in town. The safe stands " +
-          "severe in the center, between brick and " +
-          "steel bar. Facing the opposite wall is a " +
-          "redwood desk. <br /><br />" +
-
-          "Sitting there is a straight backed man with " +
-          "salt and pepper hair, furiously filing documents " +
-          "and flipping through files. He jerks to a stop as " +
-          "you approach, and stands, stiffly. He turns to you " +
-          "and you notice his gaunt face and pale eyes. ";
-      }
-      else if (place == "Bakery") {
-        text = "You enter the ruins of the bakery. Scorched " +
-          "bricks litter the ground, and white ash is " +
-          "mixed into the dirt. The blaze that took out " +
-          "half of Bodie started here. You see gnarled " +
-          "cast iron about, indicating you're in the kitchen." +
-          "<br /><br /> As you make your way through the " +
-          "kitchen, you come across a one armed, portly man. " +
-          "He is wearing a suit, despite the ashy ruin you " +
-          "two stand in.";
-      }
-      else if (place == "Chinatown") {
-        text = "You're struck by the massive amount of damage done " +
-          "to the Chinatown of Bodie, north of town. It seems " +
-          "that the fire truly torched the neighborhood.<br />You " +
-          "recall a faint memory of a celebration here, with " +
-          "brightly colored ribbons hanging over the streets " +
-          "and a huge parade. Only an echo remains, in the few " +
-          "red roofed homes miraculously left standing. <br /><br />" +
-          "You investigate the nearest shack, torched on the " +
-          "outside but fairly preserved inside. On a ramshackle " +
-          "desk is a wooden amulet, on a twine string. Perplexed, " +
-          "you pick it up. A faded sketch of a girl is inside. " +
-          "<br /><br /> This is a desolate place.";
-      }
-      else if (place == "Perry House") {
-        text = "Poking your head through the doorframe, you see a woman " +
-          "in a rocking chair, head buried in her hands. Hearing the " +
-          "draft, she looks up and sees you. Her face is lined with " +
-          "stress and weathered by sun.</br>";
-      }
-      else if (place == "Wesley House") {
-        text = "The Wesley house is austere and well kept. You go to knock on " +
-          "the door, but at the first rap the door creaks open. " +
-          "</br></br>You go inside the " + place + ".";
-
       }
       else {
         text = agent + " go to " + place;
