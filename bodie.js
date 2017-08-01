@@ -660,7 +660,26 @@ function generate_choices() {
 
 }
 
-function begin() { render(); }
+function begin() { 
+  document.getElementById("response").innerHTML = "<q>Hey, stranger.</q> </br></br><q>Seems like you've arrived in Bodie at a bad time. I'm sheriff " +
+                                                  "Maurice Hayes. Pleased to make your aquantance.</q></br></br>You explain to the sheriff " +
+                                                  "that your grandfather owned a general store on Main Street. You visited Bodie once as " +
+                                                  "a child, in its heyday, and remembered the town as a lively camp, a place of opportunity. " +
+                                                  "You left your life in the city to take over the store after granddad's death, but now " +
+                                                  "that the store (and your money) is gone, you're left aimless.</br></br> The sheriff " +
+                                                  "scratches his chin and chimes in.</br></br><q>Well, here's an aim for you - we think " +
+                                                  "the fire that burned your store, and damn near half of Bodie, was arson. The fire " +
+                                                  "started in Mrs. Perry's restaurant, around 2 am. That itself isn't too suspicious, " +
+                                                  "but the water lines were also deliberately sabotaged. I also know for a fact that " +
+                                                  "there's folk about who stood to benefit from this fire.</q> </br></br> You ask if there are any leads. </br></br><q>Well, " +
+                                                  "soon, JS Cain will have a list of those who got insurance from the fire and their " +
+                                                  "payouts. We also haven't searched Perry's restaurant for clues yet either. Why, are " +
+                                                  "you interested in helping? There'd be a reward in it, and justice, too. I don't know " +
+                                                  "who I can trust in town, but as an outsider, there's no way you were involved.</q>" +
+                                                  "</br></br>Please help me find the arsonist";
+ 
+  render(); 
+}
 
 function ask(agent, npc, topic) {
   var applies = (location_of[agent] == location_of[npc]) && (topics[topic] == "known") &&
